@@ -545,8 +545,8 @@
         // === Global Variables ===
         const ADMIN_PASSWORD = "8888";
         
-        // ⚠️⚠️⚠️ 這裡請再次確認您的 Google Apps Script 網址 ⚠️⚠️⚠️
-        const API_URL = "https://script.google.com/macros/s/AKfycbz8Foxliij8d5a6WI21lIXCLtVEwQwf0vx4WC3NM-7AQAKXhcmEZ-L5PPZqxGU4lbGhhw/exec"; 
+        // ⚠️⚠️⚠️ 這是您提供的網址，請確認您已將其權限設為「任何人」 ⚠️⚠️⚠️
+        const API_URL = "https://script.google.com/macros/s/AKfycbzR9dFuhvffKZCDNTo47XVq8F67QLz4I1A_fWje1FNNiNYZG-bg_spN2-EpXgnpUZBmpQ/exec"; 
         
         let isAdminMode = false;
         let editingEvent = {dayIdx:null,evtIdx:null}; 
@@ -716,6 +716,9 @@
             document.getElementById('hero-day-title').innerText = "雲端同步中...";
             try {
                 const res = await fetch(API_URL);
+                
+                if (!res.ok) throw new Error("Network response was not ok");
+                
                 const cloudData = await res.json();
                 if(cloudData && cloudData.days) {
                     data = cloudData;
@@ -727,6 +730,10 @@
                 console.log("資料同步成功！");
             } catch(e) {
                 console.error("Sync failed", e);
+                // 增加錯誤提示，幫助使用者發現權限問題
+                if(e.toString().includes('JSON')) {
+                    alert("無法讀取雲端資料，可能是權限設定問題。\n請確認 Google Apps Script 部署設定為「任何人 (Anyone)」。");
+                }
             }
             updateHero();
             renderDates();
@@ -746,7 +753,8 @@
                 fetch(API_URL, {
                     method: 'POST',
                     mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
+                    // 修正：移除 Content-Type 標頭，避免跨域問題導致資料無法傳送
+                    // headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 }).then(() => {
                     statusDiv.innerText = "✅ 雲端已更新";
