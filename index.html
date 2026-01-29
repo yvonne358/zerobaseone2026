@@ -253,6 +253,15 @@
         /* Shopping List */
         #shopping-container { margin-top: 20px; }
         .shop-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+
+        /* === 新增樣式：多重付款與智慧分帳 === */
+        .payer-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+        .payer-name { flex: 0 0 70px; font-size: 0.9rem; }
+        .payer-amt { flex: 1; padding: 6px; text-align: right; border: 1px solid #ddd; border-radius: 4px; }
+
+        /* 智慧分帳樣式 */
+        .split-amt.auto-calc { color: #999; font-style: italic; } /* 自動計算的變灰色 */
+        .split-amt.manual-calc { color: var(--text-primary); font-weight: bold; } /* 手動輸入的變黑色 */
     </style>
 </head>
 <body>
@@ -378,16 +387,46 @@
     <div id="modal-expense" class="modal">
         <div class="modal-content">
             <h3 id="exp-modal-title" class="serif-font" style="margin-top:0">記一筆</h3>
-            <div style="display:flex; gap:10px;"><div style="flex:1"><label>日期</label><input type="date" id="exp-date"></div><div style="flex:1"><label>幣別</label><select id="exp-currency" onchange="updateCurrencyUI()"><option value="JPY">JPY</option><option value="TWD">TWD</option></select></div></div>
+            
+            <div style="display:flex; gap:10px;">
+                <div style="flex:1"><label>日期</label><input type="date" id="exp-date"></div>
+                <div style="flex:1">
+                    <label>幣別</label>
+                    <select id="exp-currency" onchange="updateCurrencyUI()">
+                        <option value="TWD">TWD (台幣)</option>
+                        <option value="JPY">JPY (日幣)</option>
+                        <option value="KRW">KRW (韓元)</option>
+                    </select>
+                </div>
+            </div>
+            
             <label>項目</label><input type="text" id="exp-title">
-            <label>金額</label><input type="number" id="exp-amount" placeholder="0" oninput="calculateSplitPreview()" style="font-family:var(--font-serif); font-weight:bold; font-size:1.2rem;">
-            <label>誰先付錢?</label><select id="exp-payer"></select>
+            
+            <label>總金額</label>
+            <input type="number" id="exp-amount" placeholder="0" oninput="distributePayerAmount()" style="font-family:var(--font-serif); font-weight:bold; font-size:1.2rem; background:#FFFBF0; border:1px solid #8C7B70;">
+
+            <div style="margin:10px 0 5px 0; font-weight:bold; font-size:0.9rem; display:flex; justify-content:space-between;">
+                <span>誰先付錢?</span>
+                <span id="payer-total-check" style="font-size:0.8rem; color:#888;"></span>
+            </div>
+            <div id="payer-list-container" style="max-height:150px; overflow-y:auto; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:10px;">
+                </div>
+
             <div style="margin:8px 0 5px 0; font-weight:bold; font-size:0.9rem;">分帳 (<span class="currency-label">JPY</span>)</div>
-            <div class="split-mode-toggle"><div class="split-mode-btn active" id="mode-avg" onclick="setSplitMode('avg')">平均</div><div class="split-mode-btn" id="mode-custom" onclick="setSplitMode('custom')">手動</div></div>
-            <div id="split-list-container" style="max-height:150px; overflow-y:auto; border-top:1px solid #eee; padding-top:5px;"></div>
+            <div class="split-mode-toggle">
+                <div class="split-mode-btn active" id="mode-avg" onclick="setSplitMode('avg')">平均</div>
+                <div class="split-mode-btn" id="mode-custom" onclick="setSplitMode('custom')">手動/智慧</div>
+            </div>
+            
+            <div id="split-list-container" style="max-height:150px; overflow-y:auto; border-top:1px solid #eee; padding-top:5px;">
+                </div>
+            
             <div id="split-total-check" style="text-align:right; font-size:0.8rem; color:#888; margin-top:5px;"></div>
+            
             <label style="margin-top:10px; display:block;">備註</label><textarea id="exp-note" rows="1"></textarea>
-            <button class="btn" onclick="saveExpense()">儲存</button><button class="btn btn-outline" style="margin-top:5px" onclick="closeModal('modal-expense')">取消</button>
+            
+            <button class="btn" onclick="saveExpense()">儲存</button>
+            <button class="btn btn-outline" style="margin-top:5px" onclick="closeModal('modal-expense')">取消</button>
         </div>
     </div>
 
@@ -395,12 +434,25 @@
         <div class="modal-content">
             <h3 class="serif-font">結算報告</h3>
             
-            <div class="admin-only switch-container">
-                <span style="font-size:0.9rem;">🔓 開放成員查看總表</span>
-                <label class="switch">
-                    <input type="checkbox" id="public-view-toggle" onchange="togglePublicView()">
-                    <span class="slider"></span>
-                </label>
+            <div class="admin-only" style="background:#f0f0f0; padding:15px; border-radius:8px; margin-bottom:15px;">
+                <div class="switch-container" style="margin:0; padding:0; background:transparent; display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:0.9rem;">🔓 開放成員查看總表</span>
+                    <label class="switch">
+                        <input type="checkbox" id="public-view-toggle" onchange="togglePublicView()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <hr style="border:0; border-top:1px dashed #ccc; margin:10px 0;">
+                
+                <div style="display:flex; flex-direction:column; gap:5px;">
+                    <span style="font-size:0.9rem; color:#666;">預設記帳幣別：</span>
+                    <select id="default-currency-select" style="width:100%; margin:0; padding:8px; background:#fff;" onchange="saveDefaultCurrency()">
+                        <option value="TWD">台幣 (TWD)</option>
+                        <option value="JPY">日幣 (JPY)</option>
+                        <option value="KRW">韓元 (KRW)</option>
+                    </select>
+                </div>
             </div>
             
             <div id="settlement-rate-info" style="font-size:0.8rem;color:#888;text-align:right;margin-bottom:10px;"></div>
@@ -418,13 +470,20 @@
                 💡 紀錄轉帳後，系統會自動更新結算金額。
             </div>
             <label>日期</label><input type="date" id="trans-date">
-            <label>幣別</label><select id="trans-currency"><option value="JPY">JPY</option><option value="TWD">TWD</option></select>
+            <label>幣別</label>
+            <select id="trans-currency">
+                <option value="TWD">TWD</option>
+                <option value="JPY">JPY</option>
+                <option value="KRW">KRW</option>
+            </select>
+            
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
                 <div style="flex:1"><label>誰</label><select id="trans-from"></select></div>
                 <div style="padding-top:15px;"><i class="fas fa-arrow-right"></i></div>
                 <div style="flex:1"><label>轉給誰</label><select id="trans-to"></select></div>
             </div>
             <label>金額</label><input type="number" id="trans-amount" placeholder="0" style="font-weight:bold; font-size:1.2rem;">
+            
             <button class="btn btn-blue" onclick="saveTransfer()">確認</button>
             <button class="btn btn-outline" style="margin-top:5px" onclick="closeModal('modal-transfer')">取消</button>
         </div>
@@ -466,9 +525,11 @@
         
         const API_URL = "https://script.google.com/macros/s/AKfycbz8Foxliij8d5a6WI21lIXCLtVEwQwf0vx4WC3NM-7AQAKXhcmEZ-L5PPZqxGU4lbGhhw/exec";
         let currentRate = 0.22;
+        // === 1. 初始化與全域變數更新 ===
+        let rates = { TWD: 1, JPY: 0.22, KRW: 0.024 }; 
         let currentDayIndex = 0; 
 
-        // Public Data (Init Settings)
+        // Public Data
         let data = JSON.parse(localStorage.getItem('trip_data_public')) || {
             days: [
                 { date: "2026-01-14", title: "嵐山", location: "Kyoto", events: [] },
@@ -478,9 +539,9 @@
                 { date: "2026-01-18", title: "神社&outlet", location: "Osaka", events: [] }
             ],
             expenses: [], members: ["我", "朋友A", "朋友B", "朋友C"],
-            settings: { showTotalsToPublic: false }
+            settings: { showTotalsToPublic: false, defaultCurrency: 'TWD' }
         };
-        if(!data.settings) data.settings = { showTotalsToPublic: false }; // Backwards compatibility
+        if(!data.settings) data.settings = { showTotalsToPublic: false, defaultCurrency: 'TWD' }; 
 
         // Private Data
         let myPacking = JSON.parse(localStorage.getItem('my_private_data')) || {
@@ -549,7 +610,7 @@
                 const cloudData = await res.json();
                 if(cloudData && cloudData.days) {
                     data = cloudData;
-                    if(!data.settings) data.settings = { showTotalsToPublic: false };
+                    if(!data.settings) data.settings = { showTotalsToPublic: false, defaultCurrency: 'TWD' };
                     data.days.forEach(d => d.date = d.date.replace(/\./g, '-'));
                     localStorage.setItem('trip_data_public', JSON.stringify(data));
                 }
@@ -603,7 +664,7 @@
             loadCloudData();
         };
 
-        // ... [Day Edit Functions Kept Same] ...
+        // ... [Day Edit Functions] ...
         function openDayEditModal() { if(!isAdminMode) return; const d = data.days[currentDayIndex]; document.getElementById('day-edit-title').value = d.title; document.getElementById('day-edit-loc').value = d.location; document.getElementById('day-edit-date').value = d.date; document.getElementById('modal-day-edit').style.display = 'flex'; }
         function saveDayInfo() { const title = document.getElementById('day-edit-title').value; const loc = document.getElementById('day-edit-loc').value; const newDateStr = document.getElementById('day-edit-date').value; if (title) data.days[currentDayIndex].title = title; if (loc) data.days[currentDayIndex].location = loc; if (newDateStr && newDateStr !== data.days[currentDayIndex].date) { if (currentDayIndex === 0) { const oldStart = new Date(data.days[0].date); const newStart = new Date(newDateStr); const diffTime = newStart - oldStart; data.days.forEach(d => { const current = new Date(d.date); const newD = new Date(current.getTime() + diffTime); d.date = newD.toISOString().split('T')[0]; }); } else { data.days[currentDayIndex].date = newDateStr; } } saveData(); updateHero(); renderDates(); closeModal('modal-day-edit'); }
         function addNewDay() { if(!isAdminMode) return; const lastDay = data.days[data.days.length - 1]; const nextDate = new Date(lastDay.date); nextDate.setDate(nextDate.getDate() + 1); data.days.push({ date: nextDate.toISOString().split('T')[0], title: "自由活動", location: "Osaka", events: [] }); saveData(); renderDates(); currentDayIndex = data.days.length - 1; updateHero(); renderItinerary(); }
@@ -619,7 +680,6 @@
                 cat.items.forEach((item, iIdx) => {
                     itemsHtml += `<div class="pack-item ${item.c?'checked':''}" onclick="togShop('${cat.name}', ${iIdx})"><input type="checkbox" ${item.c?'checked':''}><span>${item.t}</span><i class="fas fa-times" style="margin-left:auto;color:#ddd;padding:5px;" onclick="delShop('${cat.name}', ${iIdx}, event)"></i></div>`;
                 });
-                // Added Edit Icon
                 container.innerHTML += `
                 <div class="pack-category-card shop-card" data-cat="${cat.name}" style="background-color:${color}33; border-left: 5px solid ${color};">
                     <div class="pack-title" style="color:${color}; filter: brightness(0.7); display:flex; align-items:center; gap:5px;">
@@ -663,104 +723,234 @@
         function openPackModal(){ document.getElementById('modal-pack-add').style.display='flex'; }
         function saveNewPackItem(){ const n=document.getElementById('pack-add-name').value; if(n){ myPacking[document.getElementById('pack-add-cat').value].push({t:n,c:false}); savePackData(); renderPackingList(); closeModal('modal-pack-add'); document.getElementById('pack-add-name').value=''; }}
 
-        // === Expense & Transfer Functions ===
-        function renderExpenseList() {
-            const l = document.getElementById('expense-list'); l.innerHTML = '';
-            const sorted = data.expenses.slice().sort((a, b) => {
-                if (a.date !== b.date) return new Date(a.date) - new Date(b.date);
-                return a.id - b.id;
-            });
-            sorted.forEach((e) => {
-                let html = '';
-                if (e.type === 'transfer') {
-                    // Transfer Styling
-                    const toMember = Object.keys(e.splitDetails)[0];
-                    html = `
-                    <div class="expense-card transfer-type" data-id="${e.id}">
-                        <div class="expense-info-left" style="display:flex; align-items:center; gap:10px;">
-                            <div style="font-size:1.2rem; color:#2196F3;"><i class="fas fa-exchange-alt"></i></div>
-                            <div>
-                                <div style="font-size:0.8rem;color:#666">${e.date}</div>
-                                <div style="font-weight:bold; font-size:1rem; color:#0D47A1;">${e.payer} <i class="fas fa-arrow-right" style="font-size:0.8rem"></i> ${toMember}</div>
-                            </div>
-                        </div>
-                        <div style="text-align:right">
-                            <div class="money" style="font-size:1.2rem; color:#2196F3">${e.currency} ${e.amount.toLocaleString()}</div>
-                            <div class="admin-only" style="margin-top:5px; gap:10px; justify-content:flex-end;">
-                                 <i class="far fa-edit" style="color:#aaa; cursor:pointer;" onclick="openTransferModal('${e.id}')"></i>
-                                 <i class="far fa-trash-alt" style="color:#ffcccb; cursor:pointer;" onclick="deleteExpense('${e.id}')"></i>
-                            </div>
-                        </div>
-                    </div>`;
-                } else {
-                    // Normal Expense
-                    html = `
-                    <div class="expense-card" data-id="${e.id}">
-                        <div class="expense-info-left">
-                            <div style="font-size:0.8rem;color:#888">${e.date}</div>
-                            <div style="font-weight:bold; font-size:1.1rem; font-family:var(--font-serif);">${e.title}</div>
-                            <div style="font-size:0.8rem; color:#666;">${e.payer} 先付</div>
-                        </div>
-                        <div style="text-align:right">
-                            <div class="money" style="font-size:1.2rem; color:var(--theme-brown)">${e.currency} ${e.amount.toLocaleString()}</div>
-                            <div class="admin-only" style="margin-top:5px; gap:10px; justify-content:flex-end;">
-                                 <i class="far fa-edit" style="color:#aaa; cursor:pointer;" onclick="openExpenseModal('${e.id}')"></i>
-                                 <i class="far fa-trash-alt" style="color:#ffcccb; cursor:pointer;" onclick="deleteExpense('${e.id}')"></i>
-                            </div>
-                        </div>
-                    </div>`;
-                }
-                l.innerHTML += html;
-            });
-            if (expSortable) expSortable.destroy();
-            expSortable = new Sortable(l, { animation: 150, delay: 200, delayOnTouchOnly: true, ghostClass: 'sortable-ghost' });
-        }
+        // === 2. 記帳與智慧分帳核心邏輯 ===
         
+        async function fetchExchangeRate() { 
+            try { 
+                const res = await fetch('https://api.exchangerate-api.com/v4/latest/TWD'); 
+                const d = await res.json(); 
+                if(d.rates) { 
+                    if(d.rates.JPY) rates.JPY = 1 / d.rates.JPY;
+                    if(d.rates.KRW) rates.KRW = 1 / d.rates.KRW;
+                    rates.TWD = 1;
+                } 
+            } catch(e) { 
+                console.log("Rate fetch failed, using defaults"); 
+            } 
+            document.getElementById('settlement-rate-info').innerText = 
+                `匯率: 1 JPY≈${rates.JPY.toFixed(3)} | 1 KRW≈${rates.KRW.toFixed(3)} TWD`;
+        }
+
         function openExpenseModal(editId=null) {
-            editingExpenseId = editId; 
-            const payer = document.getElementById('exp-payer'); payer.innerHTML=''; 
-            data.members.forEach(m=>payer.innerHTML+=`<option value="${m}">${m}</option>`);
+            editingExpenseId = editId;
+            const defaultCurr = (data.settings && data.settings.defaultCurrency) ? data.settings.defaultCurrency : 'TWD';
             
             let editData = null;
             if (editId) { 
                 editData = data.expenses.find(e => e.id === editId); 
                 if(editData.type === 'transfer') return; 
                 document.getElementById('exp-modal-title').innerText = "修改帳目"; 
-            } 
-            else { document.getElementById('exp-modal-title').innerText = "記一筆"; }
-
-            const cont = document.getElementById('split-list-container'); cont.innerHTML=''; 
-            data.members.forEach(m=> {
-                let isChecked = true; let splitAmount = 0;
-                if (editData && editData.splitDetails) {
-                    if (editData.splitDetails[m] && editData.splitDetails[m] > 0) { isChecked = true; splitAmount = editData.splitDetails[m]; } else { isChecked = false; }
-                }
-                cont.innerHTML+=`
-                <div class="split-row-compact">
-                    <input type="checkbox" class="split-cb" value="${m}" ${isChecked ? 'checked' : ''} onchange="calculateSplitPreview()">
-                    <span class="split-name">${m}</span>
-                    <input type="number" class="split-amt" data-m="${m}" value="${splitAmount}" disabled oninput="chkTotal()">
-                </div>`;
-            }); 
+            } else { 
+                document.getElementById('exp-modal-title').innerText = "記一筆"; 
+            }
 
             if (editData) {
                 document.getElementById('exp-date').value = editData.date;
                 document.getElementById('exp-currency').value = editData.currency;
                 document.getElementById('exp-title').value = editData.title;
                 document.getElementById('exp-amount').value = editData.amount;
-                document.getElementById('exp-payer').value = editData.payer;
                 document.getElementById('exp-note').value = editData.note || '';
-                setSplitMode('custom');
             } else {
                 document.getElementById('exp-date').value = new Date().toISOString().split('T')[0]; 
-                document.getElementById('exp-currency').value='JPY'; 
-                document.getElementById('exp-title').value=''; 
-                document.getElementById('exp-amount').value=''; 
-                document.getElementById('exp-note').value='';
-                setSplitMode('avg'); 
+                document.getElementById('exp-currency').value = defaultCurr; 
+                document.getElementById('exp-title').value = ''; 
+                document.getElementById('exp-amount').value = ''; 
+                document.getElementById('exp-note').value = '';
             }
-            updateCurrencyUI(); 
-            document.getElementById('modal-expense').style.display='flex'; 
+            updateCurrencyUI();
+
+            // --- A. 渲染付款人列表 (多重付款) ---
+            const payerCont = document.getElementById('payer-list-container'); 
+            payerCont.innerHTML = '';
+            data.members.forEach(m => {
+                let val = 0;
+                if (editData) {
+                    if (typeof editData.payer === 'string') {
+                        if(editData.payer === m) val = editData.amount;
+                    } else if (editData.payers && editData.payers[m]) {
+                        val = editData.payers[m];
+                    }
+                } else if (m === data.members[0]) { 
+                    val = 0; 
+                }
+                
+                payerCont.innerHTML += `
+                <div class="payer-row">
+                    <span class="payer-name">${m}</span>
+                    <input type="number" class="payer-amt" data-m="${m}" value="${val === 0 ? '' : val}" placeholder="0" oninput="checkPayerTotal()">
+                </div>`;
+            });
+
+            // --- B. 渲染分帳列表 (智慧分帳) ---
+            const splitCont = document.getElementById('split-list-container'); 
+            splitCont.innerHTML = '';
+            
+            data.members.forEach(m => {
+                let isChecked = true; 
+                let splitAmount = 0;
+                let isLocked = false; 
+
+                if (editData && editData.splitDetails) {
+                    if (editData.splitDetails[m] !== undefined && editData.splitDetails[m] > 0) { 
+                        isChecked = true; 
+                        splitAmount = editData.splitDetails[m];
+                        isLocked = true; 
+                    } else { 
+                        isChecked = false; 
+                    }
+                }
+                
+                // 加入 onfocus 事件，點擊時全選文字，解決輸入問題
+                splitCont.innerHTML += `
+                <div class="split-row-compact">
+                    <input type="checkbox" class="split-cb" value="${m}" ${isChecked ? 'checked' : ''} onchange="recalcSmartSplit()">
+                    <span class="split-name">${m}</span>
+                    <input type="number" class="split-amt ${isLocked?'manual-calc':'auto-calc'}" 
+                        data-m="${m}" data-locked="${isLocked}" value="${splitAmount}" 
+                        onfocus="if(this.classList.contains('auto-calc')) this.select();" 
+                        oninput="handleManualSplitInput(this)">
+                </div>`;
+            }); 
+
+            if (editData) {
+                 setSplitMode('custom'); 
+            } else {
+                 setSplitMode('avg'); 
+            }
+            
+            document.getElementById('modal-expense').style.display = 'flex'; 
+        }
+
+        function distributePayerAmount() {
+            const total = parseFloat(document.getElementById('exp-amount').value) || 0;
+            const payers = document.querySelectorAll('.payer-amt');
+            let currentSum = 0;
+            payers.forEach(p => currentSum += (parseFloat(p.value) || 0));
+            
+            if (currentSum === 0 || (payers[0].value > 0 && currentSum == parseFloat(payers[0].value))) {
+                payers.forEach(p => p.value = ''); 
+                payers[0].value = total; 
+            }
+            checkPayerTotal();
+            
+            if (splitMode === 'avg') calculateSplitPreview();
+            else recalcSmartSplit();
+        }
+
+        function checkPayerTotal() {
+            const total = parseFloat(document.getElementById('exp-amount').value) || 0;
+            let pSum = 0;
+            document.querySelectorAll('.payer-amt').forEach(p => pSum += (parseFloat(p.value) || 0));
+            
+            const el = document.getElementById('payer-total-check');
+            const diff = total - pSum;
+            if (Math.abs(diff) < 0.1) {
+                el.innerText = "✅ 金額吻合";
+                el.style.color = "green";
+            } else {
+                el.innerText = `❌ 差額 ${diff.toFixed(1)}`;
+                el.style.color = "red";
+            }
+        }
+
+        function handleManualSplitInput(el) {
+            el.dataset.locked = "true";
+            el.classList.remove('auto-calc');
+            el.classList.add('manual-calc');
+            recalcSmartSplit();
+        }
+
+        function recalcSmartSplit() {
+            if (splitMode === 'avg') return calculateSplitPreview();
+            
+            const total = parseFloat(document.getElementById('exp-amount').value) || 0;
+            const cbs = document.querySelectorAll('.split-cb');
+            const inps = document.querySelectorAll('.split-amt');
+            
+            let manualSum = 0;
+            let autoCandidates = [];
+
+            inps.forEach((inp, idx) => {
+                const isChecked = cbs[idx].checked;
+                
+                if (!isChecked) {
+                    inp.value = 0;
+                    inp.dataset.locked = "false"; 
+                    inp.classList.add('auto-calc');
+                    inp.classList.remove('manual-calc');
+                    inp.disabled = true; 
+                } else {
+                    inp.disabled = false;
+                    if (inp.dataset.locked === "true") {
+                        manualSum += (parseFloat(inp.value) || 0);
+                    } else {
+                        autoCandidates.push(inp);
+                    }
+                }
+            });
+
+            const remaining = total - manualSum;
+            const count = autoCandidates.length;
+
+            document.getElementById('split-total-check').innerText = `剩餘可分: ${remaining}`;
+
+            if (count > 0) {
+                // 修改：使用整數分配 (無小數點)，確保總和正確
+                let baseAvg = Math.floor(remaining / count);
+                let remainder = remaining % count; // 餘數
+
+                autoCandidates.forEach(inp => {
+                    let val = baseAvg;
+                    // 將餘數分配給前幾個人
+                    if (remainder > 0) {
+                        val += 1;
+                        remainder--;
+                    } else if (remainder < 0) { // 處理負數情況 (手動輸入大於總額)
+                         val -= 1;
+                         remainder++;
+                    }
+
+                    inp.value = val;
+                    inp.classList.add('auto-calc');
+                    inp.classList.remove('manual-calc');
+                });
+            }
+            
+            chkTotal();
+        }
+
+        function calculateSplitPreview(){ if(splitMode!=='avg') return; const t=parseFloat(document.getElementById('exp-amount').value)||0; const cbs=document.querySelectorAll('.split-cb'); const inps=document.querySelectorAll('.split-amt'); let cnt=0; cbs.forEach(c=>{if(c.checked)cnt++}); const avg=cnt>0?Math.floor(t/cnt):0; let rem=cnt>0?t-(avg*cnt):0; inps.forEach((inp,i)=>{ if(cbs[i].checked){ let v=avg; if(rem>0){v++;rem--;} inp.value=v; } else inp.value=0; }); chkTotal(); }
+        
+        function setSplitMode(m) {
+            splitMode = m;
+            document.getElementById('mode-avg').classList.toggle('active', m === 'avg');
+            document.getElementById('mode-custom').classList.toggle('active', m === 'custom');
+            
+            const inps = document.querySelectorAll('.split-amt');
+            const cbs = document.querySelectorAll('.split-cb');
+            
+            if (m === 'avg') {
+                 inps.forEach(i => i.disabled = true);
+                 calculateSplitPreview();
+            } else {
+                inps.forEach((i, idx) => {
+                    i.disabled = !cbs[idx].checked;
+                    i.dataset.locked = "false"; 
+                    i.classList.add('auto-calc');
+                    i.classList.remove('manual-calc');
+                });
+                recalcSmartSplit();
+            }
         }
 
         function saveExpense() { 
@@ -768,27 +958,151 @@
             const a = parseFloat(document.getElementById('exp-amount').value); 
             if(!t || isNaN(a) || a <= 0) return alert('請輸入有效的項目與金額'); 
             
-            let sd={}; let s=0; 
-            document.querySelectorAll('.split-amt').forEach(i=>{
-                const v=parseFloat(i.value)||0; 
-                if(v>0){ sd[i.dataset.m]=v; s+=v; }
-            }); 
-            if(Math.abs(s-a) > 5) return alert('分帳金額總和不符，請檢查分配。'); 
+            let payersObj = {};
+            let payerSum = 0;
+            document.querySelectorAll('.payer-amt').forEach(p => {
+                const val = parseFloat(p.value) || 0;
+                if (val > 0) {
+                    payersObj[p.dataset.m] = val;
+                    payerSum += val;
+                }
+            });
             
-            const expenseObj = {
+            if (Math.abs(payerSum - a) > 1) return alert(`付款金額總和 (${payerSum}) 與總金額 (${a}) 不符`);
+
+            let sd = {}; let s = 0; 
+            // 儲存時直接讀取欄位數值，即使是自動計算的也會被存入
+            document.querySelectorAll('.split-amt').forEach(i => { 
+                const v = parseFloat(i.value) || 0; 
+                if(v > 0) { sd[i.dataset.m] = v; s += v; } 
+            }); 
+            
+            if(Math.abs(s - a) > 5) return alert('分帳金額總和不符，請檢查分配。'); 
+            
+            const mainPayer = Object.keys(payersObj).length === 1 ? Object.keys(payersObj)[0] : "多位付款";
+
+            const expenseObj = { 
                 id: editingExpenseId || Date.now().toString(), 
                 date: document.getElementById('exp-date').value, 
                 currency: document.getElementById('exp-currency').value, 
-                title: t, amount: a, payer: document.getElementById('exp-payer').value, splitDetails: sd,
-                note: document.getElementById('exp-note').value,
-                type: 'normal'
+                title: t, 
+                amount: a, 
+                payer: mainPayer, 
+                payers: payersObj, 
+                splitDetails: sd, 
+                note: document.getElementById('exp-note').value, 
+                type: 'normal' 
             };
 
-            if (editingExpenseId) { const idx = data.expenses.findIndex(e => e.id === editingExpenseId); if (idx !== -1) data.expenses[idx] = expenseObj; } else { data.expenses.push(expenseObj); }
-            saveData(); renderExpenseList(); renderTotalOverview(); closeModal('modal-expense'); 
+            if (editingExpenseId) { 
+                const idx = data.expenses.findIndex(e => e.id === editingExpenseId); 
+                if (idx !== -1) data.expenses[idx] = expenseObj; 
+            } else { 
+                data.expenses.push(expenseObj); 
+            } 
+            saveData(); 
+            renderExpenseList(); 
+            renderTotalOverview(); 
+            closeModal('modal-expense'); 
         }
 
-        // === Transfer Logic ===
+        // === 3. 設定與結算更新 ===
+
+        function saveDefaultCurrency() {
+            if (!data.settings) data.settings = {};
+            data.settings.defaultCurrency = document.getElementById('default-currency-select').value;
+            saveData();
+        }
+
+        function togglePublicView() {
+            data.settings.showTotalsToPublic = document.getElementById('public-view-toggle').checked;
+            saveData();
+            renderSettlement();
+        }
+
+        function renderSettlement() { 
+            let spending = {}; data.members.forEach(m => spending[m] = 0);
+            let Balances = { TWD: {}, JPY: {}, KRW: {} };
+            const currencies = ['TWD', 'JPY', 'KRW'];
+            
+            currencies.forEach(c => {
+                Balances[c] = {};
+                data.members.forEach(m => Balances[c][m] = 0);
+            });
+            
+            data.expenses.forEach(e => { 
+                const cur = e.currency || 'JPY';
+                if (!Balances[cur]) return;
+
+                if (e.payers) {
+                    for (let pName in e.payers) {
+                        Balances[cur][pName] += e.payers[pName];
+                    }
+                } else if (e.payer && typeof e.payer === 'string') {
+                    Balances[cur][e.payer] += e.amount;
+                }
+                
+                Object.keys(e.splitDetails).forEach(k => {
+                    Balances[cur][k] -= e.splitDetails[k];
+                    
+                    if (e.type !== 'transfer') {
+                        let amountTWD = e.splitDetails[k];
+                        if (cur !== 'TWD') {
+                            amountTWD = amountTWD * rates[cur]; 
+                        }
+                        spending[k] += amountTWD;
+                    }
+                }); 
+            }); 
+            
+            const showDetails = isAdminMode || (data.settings && data.settings.showTotalsToPublic);
+            if (data.settings && data.settings.defaultCurrency) {
+                 document.getElementById('default-currency-select').value = data.settings.defaultCurrency;
+            }
+
+            let summaryHtml = `<div class="settlement-summary ${showDetails ? 'visible' : ''}"><h4>💰 個人總消費 (約合台幣)</h4>`;
+            for (const [m, amt] of Object.entries(spending)) { 
+                summaryHtml += `<div class="summary-row"><span>${m}</span><span>NT$ ${Math.round(amt).toLocaleString()}</span></div>`; 
+            }
+            summaryHtml += '</div>';
+            
+            function calculateDebts(balanceMap, unitName) { 
+                let d = [], c = []; 
+                for (let m in balanceMap) {
+                    if (balanceMap[m] < -1) d.push({ p: m, v: balanceMap[m] }); 
+                    else if (balanceMap[m] > 1) c.push({ p: m, v: balanceMap[m] });
+                } 
+                let h = `<h4>${unitName} 建議轉帳</h4>`; 
+                if (d.length === 0 && c.length === 0) return ''; 
+                if (d.length === 0) return h + '<div style="color:#ccc; margin-bottom:15px;">已結清</div>'; 
+                
+                while (d.length > 0 && c.length > 0) { 
+                    d.sort((a, b) => a.v - b.v); c.sort((a, b) => b.v - a.v); 
+                    let amount = Math.min(Math.abs(d[0].v), c[0].v); 
+                    
+                    h += `<div class="transfer-row">
+                            <span>${d[0].p}</span><i class="fas fa-arrow-right"></i><span>${c[0].p}</span>
+                            <span class="money">${Math.round(amount).toLocaleString()}</span>
+                          </div>`; 
+                    
+                    d[0].v += amount; c[0].v -= amount; 
+                    if (Math.abs(d[0].v) < 1) d.shift(); 
+                    if (c[0].v < 1) c.shift(); 
+                } 
+                return h; 
+            } 
+            
+            document.getElementById('settlement-content').innerHTML = 
+                summaryHtml + 
+                calculateDebts(Balances.KRW, '🇰🇷 韓元') + 
+                calculateDebts(Balances.JPY, '🇯🇵 日幣') + 
+                calculateDebts(Balances.TWD, '🇹🇼 台幣'); 
+            
+            document.getElementById('modal-settlement').style.display = 'flex'; 
+        }
+
+        // === Standard Functions ===
+        
         function openTransferModal(editId=null) {
             if(!isAdminMode) return;
             editingTransferId = editId;
@@ -852,78 +1166,75 @@
             renderExpenseList();
             renderTotalOverview();
             closeModal('modal-transfer');
-            renderSettlement(); // Update settlement view
+            renderSettlement(); 
         }
 
-        // Updated Delete Function: Removed renderSettlement()
         function deleteExpense(id) { 
             if(confirm('確定刪除此筆紀錄？')) { 
                 data.expenses = data.expenses.filter(e => e.id !== id); 
                 saveData(); 
                 renderExpenseList(); 
                 renderTotalOverview(); 
-                // renderSettlement();  <-- Removed as requested
             } 
         }
 
-        function togglePublicView() {
-            data.settings.showTotalsToPublic = document.getElementById('public-view-toggle').checked;
-            saveData();
-            renderSettlement();
-        }
+        function renderExpenseList() {
+            const l = document.getElementById('expense-list'); l.innerHTML = '';
+            const sorted = data.expenses.slice().sort((a, b) => {
+                if (a.date !== b.date) return new Date(a.date) - new Date(b.date);
+                return a.id - b.id;
+            });
+            sorted.forEach((e) => {
+                let payerText = e.payer;
+                if (e.payers && Object.keys(e.payers).length > 1) {
+                    payerText = "多人先付";
+                }
 
-        function renderSettlement() { 
-            let spending = {}; data.members.forEach(m => spending[m] = 0);
-            let J={}, T={}; data.members.forEach(m=>{J[m]=0; T[m]=0;}); 
-            
-            data.expenses.forEach(e=>{ 
-                const isJ=e.currency==='JPY'; 
-                // Calculation Logic:
-                // Payer +Amount (Credit)
-                if(isJ) J[e.payer]+=e.amount; else T[e.payer]+=e.amount; 
-                
-                // Split -Amount (Debt)
-                Object.keys(e.splitDetails).forEach(k=>{
-                    if(isJ) J[k]-=e.splitDetails[k]; else T[k]-=e.splitDetails[k];
-                    
-                    // Spending stats (Exclude transfers)
-                    if (e.type !== 'transfer') {
-                        let amount = e.splitDetails[k];
-                        if (isJ) amount = amount * currentRate;
-                        spending[k] += amount;
-                    }
-                }); 
-            }); 
-            
-            // Toggle Logic
-            const showDetails = isAdminMode || data.settings.showTotalsToPublic;
-            
-            // Update Toggle Switch UI
-            document.getElementById('public-view-toggle').checked = data.settings.showTotalsToPublic;
-
-            let summaryHtml = `<div class="settlement-summary ${showDetails ? 'visible' : ''}"><h4>💰 個人總消費 (約合台幣)</h4>`;
-            for (const [m, amt] of Object.entries(spending)) { summaryHtml += `<div class="summary-row"><span>${m}</span><span>NT$ ${Math.round(amt).toLocaleString()}</span></div>`; }
-            summaryHtml += '</div>';
-            
-            function sv(b,u){ 
-                let d=[],c=[]; for(let m in b){if(b[m]<-1)d.push({p:m,v:b[m]});else if(b[m]>1)c.push({p:m,v:b[m]});} 
-                let h=`<h4>${u} 建議轉帳</h4>`; if(d.length===0)return h+'<div style="color:#ccc; margin-bottom:15px;">已結清</div>'; 
-                while(d.length>0&&c.length>0){ 
-                    d.sort((a,b)=>a.v-b.v);c.sort((a,b)=>b.v-a.v); 
-                    let a=Math.min(Math.abs(d[0].v),c[0].v); 
-                    h+=`<div class="transfer-row"><span>${d[0].p}</span><i class="fas fa-arrow-right"></i><span>${c[0].p}</span><span class="money">${Math.round(a).toLocaleString()}</span></div>`; 
-                    d[0].v+=a;c[0].v-=a; if(Math.abs(d[0].v)<1)d.shift();if(c[0].v<1)c.shift(); 
-                } return h; 
-            } 
-            
-            document.getElementById('settlement-rate-info').innerText = `即時匯率: 1 JPY ≈ ${currentRate} TWD`;
-            document.getElementById('settlement-content').innerHTML = summaryHtml + sv(J,'🇯🇵 日幣') + sv(T,'🇹🇼 台幣'); 
-            document.getElementById('modal-settlement').style.display='flex'; 
+                let html = '';
+                if (e.type === 'transfer') {
+                    const toMember = Object.keys(e.splitDetails)[0];
+                    html = `
+                    <div class="expense-card transfer-type" data-id="${e.id}">
+                        <div class="expense-info-left" style="display:flex; align-items:center; gap:10px;">
+                            <div style="font-size:1.2rem; color:#2196F3;"><i class="fas fa-exchange-alt"></i></div>
+                            <div>
+                                <div style="font-size:0.8rem;color:#666">${e.date}</div>
+                                <div style="font-weight:bold; font-size:1rem; color:#0D47A1;">${e.payer} <i class="fas fa-arrow-right" style="font-size:0.8rem"></i> ${toMember}</div>
+                            </div>
+                        </div>
+                        <div style="text-align:right">
+                            <div class="money" style="font-size:1.2rem; color:#2196F3">${e.currency} ${e.amount.toLocaleString()}</div>
+                            <div class="admin-only" style="margin-top:5px; gap:10px; justify-content:flex-end;">
+                                 <i class="far fa-edit" style="color:#aaa; cursor:pointer;" onclick="openTransferModal('${e.id}')"></i>
+                                 <i class="far fa-trash-alt" style="color:#ffcccb; cursor:pointer;" onclick="deleteExpense('${e.id}')"></i>
+                            </div>
+                        </div>
+                    </div>`;
+                } else {
+                    html = `
+                    <div class="expense-card" data-id="${e.id}">
+                        <div class="expense-info-left">
+                            <div style="font-size:0.8rem;color:#888">${e.date}</div>
+                            <div style="font-weight:bold; font-size:1.1rem; font-family:var(--font-serif);">${e.title}</div>
+                            <div style="font-size:0.8rem; color:#666;">${payerText}</div>
+                        </div>
+                        <div style="text-align:right">
+                            <div class="money" style="font-size:1.2rem; color:var(--theme-brown)">${e.currency} ${e.amount.toLocaleString()}</div>
+                            <div class="admin-only" style="margin-top:5px; gap:10px; justify-content:flex-end;">
+                                 <i class="far fa-edit" style="color:#aaa; cursor:pointer;" onclick="openExpenseModal('${e.id}')"></i>
+                                 <i class="far fa-trash-alt" style="color:#ffcccb; cursor:pointer;" onclick="deleteExpense('${e.id}')"></i>
+                            </div>
+                        </div>
+                    </div>`;
+                }
+                l.innerHTML += html;
+            });
+            if (expSortable) expSortable.destroy();
+            expSortable = new Sortable(l, { animation: 150, delay: 200, delayOnTouchOnly: true, ghostClass: 'sortable-ghost' });
         }
 
         // ... [Standard Functions] ...
         function createClickEffect(e) { if(e.target.closest('.admin-lock-btn') || e.target.closest('.edit-day-btn')) return; const shapes = ['♤', '♡', '♢', '♧']; const shape = shapes[Math.floor(Math.random() * shapes.length)]; const el = document.createElement('div'); el.classList.add('click-particle'); el.innerText = shape; const isLucky = Math.random() > 0.85; const color = isLucky ? '#E09F9F' : '#8C7B70'; el.style.color = color; el.style.left = (e.clientX - 7) + 'px'; el.style.top = (e.clientY - 15) + 'px'; const rot = Math.random() * 40 - 20; el.style.transform = `rotate(${rot}deg)`; document.body.appendChild(el); setTimeout(() => { el.remove(); }, 5000); }
-        async function fetchExchangeRate() { try { const res = await fetch('https://api.exchangerate-api.com/v4/latest/JPY'); const d = await res.json(); if(d.rates && d.rates.TWD) { currentRate = d.rates.TWD; } } catch(e) {} }
         function switchPage(pid, el) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById('page-'+pid).classList.add('active'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); el.classList.add('active'); if(pid !== 'list') updateHero(); }
         function closeModal(id) { document.getElementById(id).style.display='none'; }
         function startRealTimeClock() { function update() { const now = new Date(); const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']; const h = String(now.getHours()).padStart(2,'0'); const m = String(now.getMinutes()).padStart(2,'0'); const year = now.getFullYear(); const month = String(now.getMonth() + 1).padStart(2, '0'); const day = String(now.getDate()).padStart(2, '0'); document.querySelectorAll('.real-time-clock').forEach(el => { el.innerHTML = `${h}:${m} <span style="font-size:1rem; font-weight:400;">${days[now.getDay()]}</span>`; }); document.querySelectorAll('.real-date-display').forEach(el => { el.innerText = `${year}.${month}.${day}`; }); } update(); setInterval(update, 1000); }
@@ -937,8 +1248,6 @@
         function openEventModal(idx=null) { editingEvent = { dayIdx: currentDayIndex, evtIdx: idx }; document.getElementById('evt-title').value=''; document.getElementById('evt-note').value=''; setTimeVal('evt-time', '09:00'); setTimeVal('evt-trans', '09:00'); setTimeVal('evt-dep', '09:00'); setTimeVal('evt-arr', '13:00'); if(idx===null) { document.getElementById('evt-cat').value='spot'; document.getElementById('evt-loc').value=''; document.getElementById('evt-trans-from').value=''; document.getElementById('evt-trans-to').value=''; } else { const e = data.days[currentDayIndex].events[idx]; document.getElementById('evt-cat').value = e.category||'spot'; document.getElementById('evt-title').value = e.title; document.getElementById('evt-note').value = e.note; if(e.category === 'flight') { document.getElementById('evt-dep-apt').value=e.depAirport; document.getElementById('evt-arr-apt').value=e.arrAirport; setTimeVal('evt-dep', e.depTime); setTimeVal('evt-arr', e.arrTime); document.getElementById('evt-flt-no').value=e.flightNo; document.getElementById('evt-plane').value=e.aircraft; } else if(e.category === 'transport') { setTimeVal('evt-trans', e.time); document.getElementById('evt-trans-from').value = e.transFrom; document.getElementById('evt-trans-to').value = e.transTo; } else { setTimeVal('evt-time', e.time); document.getElementById('evt-loc').value = e.location; } } toggleEventFields(); document.getElementById('modal-event').style.display='flex'; }
         function saveEvent() { const cat = document.getElementById('evt-cat').value; const title = document.getElementById('evt-title').value; if(!title) return alert('請輸入名稱'); let obj = { category: cat, title: title, note: document.getElementById('evt-note').value }; if(cat==='flight') { obj.depAirport=document.getElementById('evt-dep-apt').value; obj.arrAirport=document.getElementById('evt-arr-apt').value; obj.depTime=getTimeVal('evt-dep'); obj.arrTime=getTimeVal('evt-arr'); obj.flightNo=document.getElementById('evt-flt-no').value; obj.aircraft=document.getElementById('evt-plane').value; } else if(cat==='transport') { obj.time=getTimeVal('evt-trans'); obj.transFrom=document.getElementById('evt-trans-from').value; obj.transTo=document.getElementById('evt-trans-to').value; } else { obj.time=getTimeVal('evt-time'); obj.location=document.getElementById('evt-loc').value; } if(editingEvent.evtIdx===null) data.days[currentDayIndex].events.push(obj); else data.days[currentDayIndex].events[editingEvent.evtIdx] = obj; saveData(); renderItinerary(); closeModal('modal-event'); }
         function delEvt(idx) { if(confirm('刪除?')){ data.days[currentDayIndex].events.splice(idx,1); saveData(); renderItinerary(); }}
-        function setSplitMode(m){ splitMode=m; document.getElementById('mode-avg').classList.toggle('active',m==='avg'); document.getElementById('mode-custom').classList.toggle('active',m==='custom'); document.querySelectorAll('.split-amt').forEach((i,idx)=> i.disabled = !(m==='custom' && document.querySelectorAll('.split-cb')[idx].checked)); if(m==='avg') calculateSplitPreview(); }
-        function calculateSplitPreview(){ if(splitMode!=='avg') return; const t=parseFloat(document.getElementById('exp-amount').value)||0; const cbs=document.querySelectorAll('.split-cb'); const inps=document.querySelectorAll('.split-amt'); let cnt=0; cbs.forEach(c=>{if(c.checked)cnt++}); const avg=cnt>0?Math.floor(t/cnt):0; let rem=cnt>0?t-(avg*cnt):0; inps.forEach((inp,i)=>{ if(cbs[i].checked){ let v=avg; if(rem>0){v++;rem--;} inp.value=v; } else inp.value=0; }); chkTotal(); }
         function chkTotal(){ let s=0; document.querySelectorAll('.split-amt').forEach(i=>s+=parseFloat(i.value)||0); document.getElementById('split-total-check').innerText=`總和: ${s}`; }
         function updateCurrencyUI(){ const c=document.getElementById('exp-currency').value; document.querySelectorAll('.currency-label').forEach(e=>e.innerText=c); }
         function renderTotalOverview(){ let j=0; data.expenses.forEach(e=>{if(e.currency==='JPY' && e.type !== 'transfer')j+=e.amount;}); document.getElementById('total-expense-display').innerHTML=`JPY: ¥${j.toLocaleString()}`; }
