@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>首爾小旅遊</title>
+    <title>旅遊隨身手冊</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="首爾之旅">
+    <meta name="apple-mobile-web-app-title" content="旅遊手冊">
+    
     <link rel="apple-touch-icon" sizes="180x180" href="app-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="app-icon.png">
     <link rel="icon" type="image/png" sizes="16x16" href="app-icon.png">
@@ -70,24 +71,30 @@
             display: flex; flex-direction: column; justify-content: flex-end;
             color: var(--text-primary);
             background-color: #ddd;
+            
+            /* 使用 header-bg.jpg */
             background-image: 
                 linear-gradient(to bottom, rgba(248, 248, 246, 0.2) 0%, rgba(248, 248, 246, 0.6) 70%, rgba(248, 248, 246, 1) 100%),
                 url('header-bg.jpg');
+                
             background-size: cover; background-position: center; background-repeat: no-repeat;
             margin-top: calc(-1 * env(safe-area-inset-top));
             padding-top: calc(40px + env(safe-area-inset-top));
         }
         
+        /* 天氣小工具樣式 */
         .weather-widget-float {
             position: absolute; 
             top: calc(55px + env(safe-area-inset-top)); 
             right: 20px;
             background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(8px);
-            padding: 10px 15px; border-radius: 16px; text-align: center;
+            padding: 8px 15px; border-radius: 16px; text-align: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.6);
+            min-width: 60px;
         }
-        .weather-icon-large { font-size: 1.8rem; color: #FFB300; margin-bottom: 2px; }
-        .weather-temp-large { font-family: var(--font-serif); font-size: 1.2rem; font-weight: bold; }
+        .weather-icon-large { font-size: 1.6rem; color: #FFB300; margin-bottom: 2px; }
+        .weather-temp-large { font-family: var(--font-serif); font-size: 1.1rem; font-weight: bold; }
+        .weather-desc { font-size: 0.75rem; color: #666; margin-top: 2px; }
 
         .time-widget-float { 
             position: absolute; 
@@ -95,8 +102,27 @@
             left: 20px; 
             text-align: left;
         }
-        .time-display { font-family: var(--font-serif); font-size: 3.5rem; font-weight: 700; line-height: 1; text-shadow: 0 2px 20px rgba(255,255,255,0.9); }
-        .date-display { font-family: var(--font-serif); font-size: 1.1rem; color: #444; font-weight: bold; margin-left: 4px; letter-spacing: 1px; }
+        /* 時間顯示設定：24小時制 + 星期 */
+        .time-display { 
+            font-family: var(--font-serif); 
+            font-size: 3.5rem; 
+            font-weight: 700; 
+            line-height: 1; 
+            text-shadow: 0 2px 20px rgba(255,255,255,0.9); 
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+        /* 日期顯示設定：YYYY.MM.DD */
+        .date-display { 
+            font-family: var(--font-serif); 
+            font-size: 1.1rem; 
+            color: #444; 
+            font-weight: bold; 
+            margin-left: 4px; 
+            letter-spacing: 1px; 
+            margin-top: 5px;
+        }
 
         .day-title-large { font-family: var(--font-serif); font-size: 2rem; margin: 0 0 5px 0; font-weight: 700; line-height: 1.2; text-shadow: 0 0 10px rgba(255,255,255,0.8); }
         .location-tag { color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 15px; display: flex; align-items: center; gap: 5px; }
@@ -115,7 +141,7 @@
         .date-card-num { font-size: 1.4rem; font-weight: bold; line-height: 1; }
         .date-card-add { background: #eee; border: 2px dashed #ccc; color: #999; }
 
-        /* List Tabs (Custom for List Page) */
+        /* List Tabs */
         .list-tab-card { width: auto; padding: 0 20px; font-size: 1rem; font-weight: bold; }
 
         /* Content Area */
@@ -157,8 +183,6 @@
         
         .card-actions-bar { display: flex; gap: 15px; margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; }
         .action-link { color: var(--text-secondary); font-size: 0.9rem; text-decoration: none; display: flex; align-items: center; gap: 5px; cursor: pointer; }
-        .flight-visual { background: #F2F6F9; padding: 15px; border-radius: 12px; margin: 10px 0; display: flex; justify-content: space-between; align-items: center; }
-        .transport-visual { background: #F0F4F4; padding: 12px; border-radius: 12px; margin: 10px 0; display: flex; align-items: center; gap: 10px; }
 
         /* Expense Cards */
         .expense-card {
@@ -308,15 +332,15 @@
                 <div class="date-display real-date-display">--</div>
             </div>
             <div class="weather-widget-float weather-widget">
-                <div class="weather-icon-large weather-icon"><i class="fas fa-spinner fa-spin"></i></div>
-                <div class="weather-temp-large serif-font weather-temp">--°C</div>
-                <div style="font-size:0.8rem;color:#666" class="weather-desc">Loading</div>
+                <div class="weather-icon-large weather-icon" id="hero-weather-icon"><i class="fas fa-spinner fa-spin"></i></div>
+                <div class="weather-temp-large serif-font weather-temp" id="hero-weather-temp">--°C</div>
+                <div class="weather-desc" id="hero-weather-desc">載入中...</div>
             </div>
             <div class="day-title-large">
-                <span id="hero-day-title">Day 1: 嵐山</span>
+                <span id="hero-day-title">Day 1</span>
                 <i class="fas fa-edit edit-day-btn admin-only" onclick="openDayEditModal()"></i>
             </div>
-            <div class="location-tag" id="hero-day-loc"><i class="fas fa-map-marker-alt"></i> Kyoto</div>
+            <div class="location-tag" id="hero-day-loc"><i class="fas fa-map-marker-alt"></i> Japan</div>
         </div>
 
         <div class="date-scroller" id="date-list"></div>
@@ -336,14 +360,14 @@
                 <div class="date-display real-date-display">--</div>
             </div>
             <div class="day-title-large">我的記帳</div>
-            <div class="location-tag"><i class="fas fa-coins"></i> Osaka & Kyoto</div>
+            <div class="location-tag"><i class="fas fa-coins"></i> Trip Expenses</div>
         </div>
 
         <div class="content-area-bg" style="padding:20px;">
             <div class="balance-card">
                 <div class="admin-only" style="position: absolute; top:15px; right:15px; cursor:pointer; color:var(--text-secondary);" onclick="openMembersModal()"><i class="fas fa-cog"></i> 成員</div>
-                <h3>目前累計支出</h3>
-                <div id="total-expense-display" style="font-size:0.9rem; line-height:1.5; color:#555;"></div>
+                <h3>目前累計支出 (全體)</h3>
+                <div id="total-expense-display" style="font-size:1.1rem; line-height:1.5; color:#555; font-weight:bold; font-family:var(--font-serif);"></div>
                 <button class="btn btn-small btn-outline" style="margin-top:10px;" onclick="renderSettlement()">查看結算</button>
             </div>
             <div id="expense-list"></div>
@@ -520,28 +544,39 @@
     <script>
         // === Global Variables ===
         const ADMIN_PASSWORD = "8888";
-        let isAdminMode = false;
-        let markers=[]; let editingEvent={dayIdx:null,evtIdx:null}; let editingExpenseId=null; let editingTransferId=null; let splitMode='avg'; let sortableInstance=null, expSortable=null, shopSortable=null;
         
-        const API_URL = "https://script.google.com/macros/s/AKfycbz8Foxliij8d5a6WI21lIXCLtVEwQwf0vx4WC3NM-7AQAKXhcmEZ-L5PPZqxGU4lbGhhw/exec";
-        let currentRate = 0.22;
-        // === 1. 初始化與全域變數更新 ===
+        // ⚠️⚠️⚠️ 這裡請再次確認您的 Google Apps Script 網址 ⚠️⚠️⚠️
+        const API_URL = "https://script.google.com/macros/s/AKfycbz8Foxliij8d5a6WI21lIXCLtVEwQwf0vx4WC3NM-7AQAKXhcmEZ-L5PPZqxGU4lbGhhw/exec"; 
+        
+        let isAdminMode = false;
+        let editingEvent = {dayIdx:null,evtIdx:null}; 
+        let editingExpenseId=null; 
+        let editingTransferId=null; 
+        let splitMode='avg'; 
+        let sortableInstance=null, expSortable=null, shopSortable=null;
+        
         let rates = { TWD: 1, JPY: 0.22, KRW: 0.024 }; 
         let currentDayIndex = 0; 
 
-        // Public Data
+        // 座標資料庫 (影響天氣)
+        const LOC_COORDS = { 
+            'Kyoto': { lat: 35.0116, lon: 135.7681 }, 
+            'Osaka': { lat: 34.6937, lon: 135.5023 } 
+        };
+
+        // 預設資料
         let data = JSON.parse(localStorage.getItem('trip_data_public')) || {
             days: [
-                { date: "2026-01-14", title: "嵐山", location: "Kyoto", events: [] },
-                { date: "2026-01-15", title: "京都市區", location: "Kyoto", events: [] },
-                { date: "2026-01-16", title: "勝尾寺", location: "Osaka", events: [] },
-                { date: "2026-01-17", title: "心齋橋附近逛街", location: "Osaka", events: [] },
-                { date: "2026-01-18", title: "神社&outlet", location: "Osaka", events: [] }
+                { date: "2026-01-14", title: "Day 1 集合", location: "Kyoto", events: [] },
+                { date: "2026-01-15", title: "Day 2", location: "Kyoto", events: [] },
+                { date: "2026-01-16", title: "Day 3", location: "Osaka", events: [] },
+                { date: "2026-01-17", title: "Day 4", location: "Osaka", events: [] },
+                { date: "2026-01-18", title: "Day 5 返程", location: "Osaka", events: [] }
             ],
-            expenses: [], members: ["我", "朋友A", "朋友B", "朋友C"],
-            settings: { showTotalsToPublic: false, defaultCurrency: 'TWD' }
+            expenses: [], 
+            members: ["團員A", "團員B", "團員C", "團員D", "團員E", "團員F"],
+            settings: { showTotalsToPublic: false, defaultCurrency: 'JPY' }
         };
-        if(!data.settings) data.settings = { showTotalsToPublic: false, defaultCurrency: 'TWD' }; 
 
         // Private Data
         let myPacking = JSON.parse(localStorage.getItem('my_private_data')) || {
@@ -556,9 +591,220 @@
         const CAT_CONFIG = { 'spot': { color: '#E09F9F', name: '景點' }, 'transport': { color: '#94C0C0', name: '交通' }, 'flight': { color: '#A0C4E3', name: '航班' }, 'food': { color: '#E3D081', name: '美食' }, 'shop': { color: '#DDBea9', name: '購物' }, 'other': { color: '#B0B0B0', name: '其他' } };
         const PACK_UI = { 'luggage': { name: '🧳 行李', bg: 'var(--bg-luggage)' }, 'bag': { name: '👜 隨身包包', bg: 'var(--bg-bag)' }, 'elec': { name: '🔌 電器吃飯', bg: 'var(--bg-elec)' }, 'wear': { name: '👗 衣物', bg: 'var(--bg-wear)' }, 'other': { name: '💊 其他', bg: 'var(--bg-other)' } };
         const SHOP_COLORS = ['#E09F9F', '#94C0C0', '#E3D081', '#DDBea9', '#A0C4E3'];
-        const LOC_COORDS = { 'Kyoto': { lat: 35.0116, lon: 135.7681 }, 'Osaka': { lat: 34.6937, lon: 135.5023 } };
 
-        // === Admin Toggle Logic ===
+        // === Main Functions ===
+
+        window.onload = function() {
+            startRealTimeClock();
+            fetchExchangeRate();
+            fetchWeather(); // 啟動天氣抓取
+            document.addEventListener('click', createClickEffect);
+            renderDates(); 
+            renderItinerary(); 
+            renderExpenseList(); 
+            renderTotalOverview();
+            renderPackingList();
+            renderShoppingList();
+            loadCloudData();
+        };
+
+        // Time & Display Utils
+        function startRealTimeClock() {
+            setInterval(() => {
+                const now = new Date();
+                
+                // 24小時制時間 (HH:MM)
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const timeStr = `${hours}:${minutes}`;
+                
+                // 星期 (例如 Thu)
+                const dayStr = now.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
+                
+                // 日期格式 YYYY.MM.DD
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const date = String(now.getDate()).padStart(2, '0');
+                const fullDateStr = `${year}.${month}.${date}`;
+                
+                document.querySelectorAll('.real-time-clock').forEach(el => 
+                    el.innerHTML = `${timeStr} <span style="font-size:0.4em; margin-left:5px; vertical-align:middle; opacity:0.8;">${dayStr}</span>`);
+                
+                document.querySelectorAll('.real-date-display').forEach(el => 
+                    el.innerText = fullDateStr);
+            }, 1000);
+        }
+        
+        // === 天氣功能 (使用 Open-Meteo 免費 API) ===
+        async function fetchWeather() {
+            const d = data.days[currentDayIndex];
+            const locName = d.location; // "Kyoto" or "Osaka"
+            
+            // 預設抓大阪，如果該地點有定義就抓該地點
+            const coords = LOC_COORDS[locName] || LOC_COORDS['Osaka'];
+            
+            document.getElementById('hero-weather-desc').innerText = "更新中...";
+            
+            try {
+                // Open-Meteo API 不需要金鑰
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&current_weather=true&timezone=auto`;
+                const res = await fetch(url);
+                const wData = await res.json();
+                
+                if (wData.current_weather) {
+                    const temp = wData.current_weather.temperature;
+                    const code = wData.current_weather.weathercode;
+                    
+                    document.getElementById('hero-weather-temp').innerText = `${temp}°C`;
+                    
+                    // 天氣代碼轉換圖示
+                    let iconClass = 'fas fa-cloud';
+                    let descText = '多雲';
+                    
+                    if (code === 0) { iconClass = 'fas fa-sun'; descText = '晴朗'; }
+                    else if (code >= 1 && code <= 3) { iconClass = 'fas fa-cloud-sun'; descText = '多雲'; }
+                    else if (code >= 45 && code <= 48) { iconClass = 'fas fa-smog'; descText = '有霧'; }
+                    else if (code >= 51 && code <= 67) { iconClass = 'fas fa-cloud-rain'; descText = '有雨'; }
+                    else if (code >= 71 && code <= 77) { iconClass = 'fas fa-snowflake'; descText = '下雪'; }
+                    else if (code >= 80 && code <= 82) { iconClass = 'fas fa-umbrella'; descText = '陣雨'; }
+                    else if (code >= 95) { iconClass = 'fas fa-bolt'; descText = '雷雨'; }
+                    
+                    document.getElementById('hero-weather-icon').innerHTML = `<i class="${iconClass}"></i>`;
+                    document.getElementById('hero-weather-desc').innerText = descText;
+                }
+            } catch (e) {
+                console.error("Weather fetch failed", e);
+                document.getElementById('hero-weather-desc').innerText = "無法載入";
+            }
+        }
+
+        function createClickEffect(e) {
+            if(Math.random()>0.3) return; // 不要每次點都出現，太花
+            const el = document.createElement('div');
+            el.innerText = ["✈️","☁️","🌸","🍱","🍘"][Math.floor(Math.random()*5)];
+            el.className = 'click-particle';
+            el.style.left = e.clientX + 'px';
+            el.style.top = e.clientY + 'px';
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 4000);
+        }
+
+        function updateHero() {
+            const d = data.days[currentDayIndex];
+            if(d) {
+                document.getElementById('hero-day-title').innerText = `Day ${currentDayIndex+1}: ${d.title}`;
+                document.getElementById('hero-day-loc').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${d.location}`;
+                fetchWeather(); // 切換日期時重新抓取該地天氣
+            }
+        }
+
+        function switchPage(pageId, btnEl) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + pageId).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            if(btnEl) btnEl.classList.add('active');
+        }
+
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        // Cloud Functions
+        async function loadCloudData() {
+            if (API_URL.includes("請填入")) {
+                console.warn("尚未設定 API_URL，略過雲端同步");
+                return;
+            }
+            document.getElementById('hero-day-title').innerText = "雲端同步中...";
+            try {
+                const res = await fetch(API_URL);
+                const cloudData = await res.json();
+                if(cloudData && cloudData.days) {
+                    data = cloudData;
+                    if(!data.settings) data.settings = { showTotalsToPublic: false, defaultCurrency: 'JPY' };
+                    // 修復日期格式
+                    data.days.forEach(d => d.date = d.date.replace(/\./g, '-'));
+                    localStorage.setItem('trip_data_public', JSON.stringify(data));
+                }
+                console.log("資料同步成功！");
+            } catch(e) {
+                console.error("Sync failed", e);
+            }
+            updateHero();
+            renderDates();
+            renderItinerary();
+            renderExpenseList();
+            renderTotalOverview();
+        }
+
+        function saveData() {
+            localStorage.setItem('trip_data_public', JSON.stringify(data));
+            if (!API_URL.includes("請填入")) {
+                const statusDiv = document.createElement('div');
+                statusDiv.style.cssText = "position:fixed;top:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:white;padding:5px 15px;border-radius:20px;font-size:0.8rem;z-index:9999;";
+                statusDiv.innerText = "☁️ 儲存中...";
+                document.body.appendChild(statusDiv);
+
+                fetch(API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                }).then(() => {
+                    statusDiv.innerText = "✅ 雲端已更新";
+                    setTimeout(() => statusDiv.remove(), 2000);
+                }).catch(e => {
+                    statusDiv.innerText = "❌ 上傳失敗";
+                    statusDiv.style.background = "red";
+                    setTimeout(() => statusDiv.remove(), 3000);
+                });
+            }
+        }
+        function savePackData() { localStorage.setItem('my_private_data', JSON.stringify(myPacking)); }
+
+        // === Logic: Dates & Itinerary ===
+        function renderDates() {
+            const container = document.getElementById('date-list');
+            container.innerHTML = '';
+            data.days.forEach((d, i) => {
+                const dateObj = new Date(d.date);
+                const dayNum = dateObj.getDate();
+                const dayName = dateObj.toLocaleDateString('en-US', {weekday:'short'});
+                container.innerHTML += `
+                <div class="date-card ${i === currentDayIndex ? 'active' : ''}" onclick="currentDayIndex=${i}; updateHero(); renderDates(); renderItinerary();">
+                    <div class="date-card-day">${dayName}</div>
+                    <div class="date-card-num">${dayNum}</div>
+                </div>`;
+            });
+            if(isAdminMode) {
+                container.innerHTML += `<div class="date-card date-card-add" onclick="addNewDay()"><i class="fas fa-plus"></i></div>`;
+            }
+        }
+
+        function renderItinerary() {
+            const container = document.getElementById('itinerary-list');
+            container.innerHTML = '';
+            const day = data.days[currentDayIndex];
+            if(!day || !day.events) return;
+            
+            day.events.sort((a,b) => a.time.localeCompare(b.time));
+            
+            day.events.forEach((evt, idx) => {
+                const catColor = CAT_CONFIG[evt.cat] ? CAT_CONFIG[evt.cat].color : '#ccc';
+                let contentHtml = `<div class="event-title-large">${evt.title}</div><div class="event-loc-row"><i class="fas fa-map-marker-alt"></i> ${evt.loc || '未指定地點'}</div>`;
+                if (evt.note) contentHtml += `<div class="event-note-box">${evt.note}</div>`;
+
+                container.innerHTML += `
+                <div class="timeline-card-wrapper" onclick="openEventModal(${idx})">
+                    <div class="timeline-time">${evt.time}</div>
+                    <div class="card timeline-style" style="border-left: 5px solid ${catColor}">
+                        ${contentHtml}
+                        <div class="admin-only card-actions-bar">
+                             <span class="action-link" onclick="event.stopPropagation(); deleteEvent(${idx})"><i class="far fa-trash-alt"></i> 刪除</span>
+                        </div>
+                    </div>
+                </div>`;
+            });
+        }
+
         function toggleAdminMode() {
             if (isAdminMode) {
                 isAdminMode = false;
@@ -585,6 +831,68 @@
             }
         }
 
+        // === Event Editing ===
+        function openEventModal(evtIdx = null) {
+            if(!isAdminMode && evtIdx === null) return; // 沒權限不能新增
+            
+            editingEvent = { dayIdx: currentDayIndex, evtIdx: evtIdx };
+            const d = data.days[currentDayIndex];
+            
+            if (evtIdx !== null) {
+                const e = d.events[evtIdx];
+                document.getElementById('evt-cat').value = e.cat;
+                document.getElementById('evt-title').value = e.title;
+                document.getElementById('evt-time').value = e.time;
+                document.getElementById('evt-loc').value = e.loc;
+                document.getElementById('evt-note').value = e.note;
+                // Transport / Flight fields would be populated here in full version
+            } else {
+                document.getElementById('evt-cat').value = 'spot';
+                document.getElementById('evt-title').value = '';
+                document.getElementById('evt-time').value = '09:00';
+                document.getElementById('evt-loc').value = '';
+                document.getElementById('evt-note').value = '';
+            }
+            toggleEventFields();
+            document.getElementById('modal-event').style.display = 'flex';
+        }
+
+        function toggleEventFields() {
+            const cat = document.getElementById('evt-cat').value;
+            document.getElementById('field-normal').style.display = (cat!=='flight'&&cat!=='transport') ? 'block':'none';
+            document.getElementById('field-transport').style.display = (cat==='transport') ? 'block':'none';
+            document.getElementById('field-flight').style.display = (cat==='flight') ? 'block':'none';
+        }
+
+        function saveEvent() {
+            const cat = document.getElementById('evt-cat').value;
+            const title = document.getElementById('evt-title').value;
+            let time = document.getElementById('evt-time').value;
+            let loc = document.getElementById('evt-loc').value;
+            const note = document.getElementById('evt-note').value;
+            
+            if (!title) return alert("請輸入行程名稱");
+            
+            const newEvt = { cat, title, time, loc, note };
+            
+            if (editingEvent.evtIdx !== null) {
+                data.days[currentDayIndex].events[editingEvent.evtIdx] = newEvt;
+            } else {
+                data.days[currentDayIndex].events.push(newEvt);
+            }
+            saveData();
+            renderItinerary();
+            closeModal('modal-event');
+        }
+
+        function deleteEvent(idx) {
+            if(confirm("刪除此行程？")) {
+                data.days[currentDayIndex].events.splice(idx, 1);
+                saveData();
+                renderItinerary();
+            }
+        }
+
         // === List Tab Switching ===
         function switchListTab(tabName, el) {
             document.querySelectorAll('.list-tab-card').forEach(c => c.classList.remove('active'));
@@ -593,7 +901,6 @@
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.getElementById('tab-' + tabName).classList.add('active');
             
-            // Update Title
             const titleEl = document.getElementById('list-page-title');
             if (tabName === 'packing') {
                 titleEl.innerText = '行李準備清單';
@@ -601,74 +908,6 @@
                 titleEl.innerText = '購物清單';
             }
         }
-
-        // === Cloud Sync & Init ===
-        async function loadCloudData() {
-            document.getElementById('hero-day-title').innerText = "雲端同步中...";
-            try {
-                const res = await fetch(API_URL);
-                const cloudData = await res.json();
-                if(cloudData && cloudData.days) {
-                    data = cloudData;
-                    if(!data.settings) data.settings = { showTotalsToPublic: false, defaultCurrency: 'TWD' };
-                    data.days.forEach(d => d.date = d.date.replace(/\./g, '-'));
-                    localStorage.setItem('trip_data_public', JSON.stringify(data));
-                }
-                console.log("資料同步成功！");
-            } catch(e) {
-                console.error("Sync failed", e);
-            }
-            updateHero();
-            renderDates();
-            renderItinerary();
-            renderExpenseList();
-            renderTotalOverview();
-            renderShoppingList();
-            renderPackingList();
-        }
-
-        function saveData() {
-            localStorage.setItem('trip_data_public', JSON.stringify(data));
-            const statusDiv = document.createElement('div');
-            statusDiv.style.cssText = "position:fixed;top:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:white;padding:5px 15px;border-radius:20px;font-size:0.8rem;z-index:9999;";
-            statusDiv.innerText = "☁️ 儲存中...";
-            document.body.appendChild(statusDiv);
-
-            fetch(API_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            }).then(() => {
-                statusDiv.innerText = "✅ 雲端已更新";
-                setTimeout(() => statusDiv.remove(), 2000);
-            }).catch(e => {
-                statusDiv.innerText = "❌ 上傳失敗";
-                statusDiv.style.background = "red";
-                setTimeout(() => statusDiv.remove(), 3000);
-            });
-        }
-
-        function savePackData() { localStorage.setItem('my_private_data', JSON.stringify(myPacking)); }
-
-        window.onload = function() {
-            startRealTimeClock();
-            fetchExchangeRate();
-            document.addEventListener('click', createClickEffect);
-            renderDates(); 
-            renderItinerary(); 
-            renderExpenseList(); 
-            renderTotalOverview();
-            renderPackingList();
-            renderShoppingList();
-            loadCloudData();
-        };
-
-        // ... [Day Edit Functions] ...
-        function openDayEditModal() { if(!isAdminMode) return; const d = data.days[currentDayIndex]; document.getElementById('day-edit-title').value = d.title; document.getElementById('day-edit-loc').value = d.location; document.getElementById('day-edit-date').value = d.date; document.getElementById('modal-day-edit').style.display = 'flex'; }
-        function saveDayInfo() { const title = document.getElementById('day-edit-title').value; const loc = document.getElementById('day-edit-loc').value; const newDateStr = document.getElementById('day-edit-date').value; if (title) data.days[currentDayIndex].title = title; if (loc) data.days[currentDayIndex].location = loc; if (newDateStr && newDateStr !== data.days[currentDayIndex].date) { if (currentDayIndex === 0) { const oldStart = new Date(data.days[0].date); const newStart = new Date(newDateStr); const diffTime = newStart - oldStart; data.days.forEach(d => { const current = new Date(d.date); const newD = new Date(current.getTime() + diffTime); d.date = newD.toISOString().split('T')[0]; }); } else { data.days[currentDayIndex].date = newDateStr; } } saveData(); updateHero(); renderDates(); closeModal('modal-day-edit'); }
-        function addNewDay() { if(!isAdminMode) return; const lastDay = data.days[data.days.length - 1]; const nextDate = new Date(lastDay.date); nextDate.setDate(nextDate.getDate() + 1); data.days.push({ date: nextDate.toISOString().split('T')[0], title: "自由活動", location: "Osaka", events: [] }); saveData(); renderDates(); currentDayIndex = data.days.length - 1; updateHero(); renderItinerary(); }
-        function deleteDay() { if(confirm("確定刪除這整天的行程嗎？")) { data.days.splice(currentDayIndex, 1); if(data.days.length === 0) { data.days.push({date: "2026-01-01", title: "New Trip", location: "Japan", events: []}); } currentDayIndex = 0; saveData(); closeModal('modal-day-edit'); renderDates(); updateHero(); renderItinerary(); } }
 
         // === Shopping & Packing Functions ===
         function renderShoppingList() {
@@ -723,8 +962,13 @@
         function openPackModal(){ document.getElementById('modal-pack-add').style.display='flex'; }
         function saveNewPackItem(){ const n=document.getElementById('pack-add-name').value; if(n){ myPacking[document.getElementById('pack-add-cat').value].push({t:n,c:false}); savePackData(); renderPackingList(); closeModal('modal-pack-add'); document.getElementById('pack-add-name').value=''; }}
 
-        // === 2. 記帳與智慧分帳核心邏輯 ===
-        
+        // === Day Editing ===
+        function openDayEditModal() { if(!isAdminMode) return; const d = data.days[currentDayIndex]; document.getElementById('day-edit-title').value = d.title; document.getElementById('day-edit-loc').value = d.location; document.getElementById('day-edit-date').value = d.date; document.getElementById('modal-day-edit').style.display = 'flex'; }
+        function saveDayInfo() { const title = document.getElementById('day-edit-title').value; const loc = document.getElementById('day-edit-loc').value; const newDateStr = document.getElementById('day-edit-date').value; if (title) data.days[currentDayIndex].title = title; if (loc) data.days[currentDayIndex].location = loc; if (newDateStr && newDateStr !== data.days[currentDayIndex].date) { if (currentDayIndex === 0) { const oldStart = new Date(data.days[0].date); const newStart = new Date(newDateStr); const diffTime = newStart - oldStart; data.days.forEach(d => { const current = new Date(d.date); const newD = new Date(current.getTime() + diffTime); d.date = newD.toISOString().split('T')[0]; }); } else { data.days[currentDayIndex].date = newDateStr; } } saveData(); updateHero(); renderDates(); closeModal('modal-day-edit'); }
+        function addNewDay() { if(!isAdminMode) return; const lastDay = data.days[data.days.length - 1]; const nextDate = new Date(lastDay.date); nextDate.setDate(nextDate.getDate() + 1); data.days.push({ date: nextDate.toISOString().split('T')[0], title: "自由活動", location: "Osaka", events: [] }); saveData(); renderDates(); currentDayIndex = data.days.length - 1; updateHero(); renderItinerary(); }
+        function deleteDay() { if(confirm("確定刪除這整天的行程嗎？")) { data.days.splice(currentDayIndex, 1); if(data.days.length === 0) { data.days.push({date: "2026-01-01", title: "New Trip", location: "Japan", events: []}); } currentDayIndex = 0; saveData(); closeModal('modal-day-edit'); renderDates(); updateHero(); renderItinerary(); } }
+
+        // === Expense & Rates ===
         async function fetchExchangeRate() { 
             try { 
                 const res = await fetch('https://api.exchangerate-api.com/v4/latest/TWD'); 
@@ -741,9 +985,14 @@
                 `匯率: 1 JPY≈${rates.JPY.toFixed(3)} | 1 KRW≈${rates.KRW.toFixed(3)} TWD`;
         }
 
+        function updateCurrencyUI() {
+            const cur = document.getElementById('exp-currency').value;
+            document.querySelectorAll('.currency-label').forEach(el => el.innerText = cur);
+        }
+
         function openExpenseModal(editId=null) {
             editingExpenseId = editId;
-            const defaultCurr = (data.settings && data.settings.defaultCurrency) ? data.settings.defaultCurrency : 'TWD';
+            const defaultCurr = (data.settings && data.settings.defaultCurrency) ? data.settings.defaultCurrency : 'JPY';
             
             let editData = null;
             if (editId) { 
@@ -769,7 +1018,7 @@
             }
             updateCurrencyUI();
 
-            // --- A. 渲染付款人列表 (多重付款) ---
+            // A. Payer List
             const payerCont = document.getElementById('payer-list-container'); 
             payerCont.innerHTML = '';
             data.members.forEach(m => {
@@ -791,7 +1040,7 @@
                 </div>`;
             });
 
-            // --- B. 渲染分帳列表 (智慧分帳) ---
+            // B. Split List
             const splitCont = document.getElementById('split-list-container'); 
             splitCont.innerHTML = '';
             
@@ -810,7 +1059,6 @@
                     }
                 }
                 
-                // 加入 onfocus 事件，點擊時全選文字，解決輸入問題
                 splitCont.innerHTML += `
                 <div class="split-row-compact">
                     <input type="checkbox" class="split-cb" value="${m}" ${isChecked ? 'checked' : ''} onchange="recalcSmartSplit()">
@@ -822,11 +1070,8 @@
                 </div>`;
             }); 
 
-            if (editData) {
-                 setSplitMode('custom'); 
-            } else {
-                 setSplitMode('avg'); 
-            }
+            if (editData) setSplitMode('custom'); 
+            else setSplitMode('avg'); 
             
             document.getElementById('modal-expense').style.display = 'flex'; 
         }
@@ -842,7 +1087,6 @@
                 payers[0].value = total; 
             }
             checkPayerTotal();
-            
             if (splitMode === 'avg') calculateSplitPreview();
             else recalcSmartSplit();
         }
@@ -861,6 +1105,14 @@
                 el.innerText = `❌ 差額 ${diff.toFixed(1)}`;
                 el.style.color = "red";
             }
+        }
+        function chkTotal(){
+             const total = parseFloat(document.getElementById('exp-amount').value) || 0;
+             let sSum = 0;
+             document.querySelectorAll('.split-amt').forEach(i => sSum += (parseFloat(i.value)||0));
+             const el = document.getElementById('split-total-check');
+             const r = total - sSum;
+             el.innerText = `差額: ${r.toFixed(0)}`;
         }
 
         function handleManualSplitInput(el) {
@@ -902,30 +1154,20 @@
             const remaining = total - manualSum;
             const count = autoCandidates.length;
 
-            document.getElementById('split-total-check').innerText = `剩餘可分: ${remaining}`;
-
             if (count > 0) {
-                // 修改：使用整數分配 (無小數點)，確保總和正確
                 let baseAvg = Math.floor(remaining / count);
-                let remainder = remaining % count; // 餘數
+                let remainder = remaining % count; 
 
                 autoCandidates.forEach(inp => {
                     let val = baseAvg;
-                    // 將餘數分配給前幾個人
-                    if (remainder > 0) {
-                        val += 1;
-                        remainder--;
-                    } else if (remainder < 0) { // 處理負數情況 (手動輸入大於總額)
-                         val -= 1;
-                         remainder++;
-                    }
+                    if (remainder > 0) { val += 1; remainder--; }
+                    else if (remainder < 0) { val -= 1; remainder++; }
 
                     inp.value = val;
                     inp.classList.add('auto-calc');
                     inp.classList.remove('manual-calc');
                 });
             }
-            
             chkTotal();
         }
 
@@ -971,7 +1213,6 @@
             if (Math.abs(payerSum - a) > 1) return alert(`付款金額總和 (${payerSum}) 與總金額 (${a}) 不符`);
 
             let sd = {}; let s = 0; 
-            // 儲存時直接讀取欄位數值，即使是自動計算的也會被存入
             document.querySelectorAll('.split-amt').forEach(i => { 
                 const v = parseFloat(i.value) || 0; 
                 if(v > 0) { sd[i.dataset.m] = v; s += v; } 
@@ -1005,8 +1246,6 @@
             renderTotalOverview(); 
             closeModal('modal-expense'); 
         }
-
-        // === 3. 設定與結算更新 ===
 
         function saveDefaultCurrency() {
             if (!data.settings) data.settings = {};
@@ -1101,8 +1340,7 @@
             document.getElementById('modal-settlement').style.display = 'flex'; 
         }
 
-        // === Standard Functions ===
-        
+        // === Transfers & List ===
         function openTransferModal(editId=null) {
             if(!isAdminMode) return;
             editingTransferId = editId;
@@ -1233,24 +1471,16 @@
             expSortable = new Sortable(l, { animation: 150, delay: 200, delayOnTouchOnly: true, ghostClass: 'sortable-ghost' });
         }
 
-        // ... [Standard Functions] ...
-        function createClickEffect(e) { if(e.target.closest('.admin-lock-btn') || e.target.closest('.edit-day-btn')) return; const shapes = ['♤', '♡', '♢', '♧']; const shape = shapes[Math.floor(Math.random() * shapes.length)]; const el = document.createElement('div'); el.classList.add('click-particle'); el.innerText = shape; const isLucky = Math.random() > 0.85; const color = isLucky ? '#E09F9F' : '#8C7B70'; el.style.color = color; el.style.left = (e.clientX - 7) + 'px'; el.style.top = (e.clientY - 15) + 'px'; const rot = Math.random() * 40 - 20; el.style.transform = `rotate(${rot}deg)`; document.body.appendChild(el); setTimeout(() => { el.remove(); }, 5000); }
-        function switchPage(pid, el) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById('page-'+pid).classList.add('active'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); el.classList.add('active'); if(pid !== 'list') updateHero(); }
-        function closeModal(id) { document.getElementById(id).style.display='none'; }
-        function startRealTimeClock() { function update() { const now = new Date(); const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']; const h = String(now.getHours()).padStart(2,'0'); const m = String(now.getMinutes()).padStart(2,'0'); const year = now.getFullYear(); const month = String(now.getMonth() + 1).padStart(2, '0'); const day = String(now.getDate()).padStart(2, '0'); document.querySelectorAll('.real-time-clock').forEach(el => { el.innerHTML = `${h}:${m} <span style="font-size:1rem; font-weight:400;">${days[now.getDay()]}</span>`; }); document.querySelectorAll('.real-date-display').forEach(el => { el.innerText = `${year}.${month}.${day}`; }); } update(); setInterval(update, 1000); }
-        async function updateWeather(loc) { const activePage = document.querySelector('.page.active').id; if(activePage === 'page-list') return; if(!loc) { if(data.days[currentDayIndex]) loc = data.days[currentDayIndex].location; else loc = 'Osaka'; } const coords = LOC_COORDS[loc] || LOC_COORDS['Osaka']; const wIcons = document.querySelectorAll('.weather-icon'); const wTemps = document.querySelectorAll('.weather-temp'); const wDescs = document.querySelectorAll('.weather-desc'); wTemps.forEach(e => e.innerText = "--°C"); wDescs.forEach(e => e.innerText = "Loading..."); try { const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&current_weather=true`); const d = await res.json(); const temp = Math.round(d.current_weather.temperature); const code = d.current_weather.weathercode; let iconClass = "fa-sun"; let descText = "晴朗"; if(code>0 && code<=3) { iconClass = "fa-cloud"; descText = "多雲"; } else if(code>=51) { iconClass = "fa-umbrella"; descText = "雨/雪"; } wTemps.forEach(e => e.innerText = `${temp}°C`); wIcons.forEach(e => e.innerHTML = `<i class="fas ${iconClass}"></i>`); wDescs.forEach(e => e.innerText = descText); } catch(e) { wDescs.forEach(e => e.innerText = "Offline"); } }
-        function getTimeVal(p) { return document.getElementById(p).value; }
-        function setTimeVal(p, v) { if(!v) v="09:00"; document.getElementById(p).value = v; }
-        function renderDates() { const c = document.getElementById('date-list'); c.innerHTML=''; data.days.forEach((d,i)=>{ const el=document.createElement('div'); el.className=`date-card ${i===currentDayIndex?'active':''}`; const dateParts = d.date.split('-'); const dayNum = dateParts[2]; el.innerHTML=`<div class="date-card-day">DAY ${i+1}</div><div class="date-card-num">${dayNum}</div>`; el.onclick=()=>{ currentDayIndex=i; updateHero(); renderDates(); renderItinerary(); }; c.appendChild(el); }); if(isAdminMode) { const addBtn = document.createElement('div'); addBtn.className = "date-card date-card-add"; addBtn.innerHTML = `<i class="fas fa-plus"></i>`; addBtn.onclick = addNewDay; c.appendChild(addBtn); } updateHero(); }
-        function updateHero() { const d = data.days[currentDayIndex]; if (!d) return; document.getElementById('hero-day-title').innerText=`Day ${currentDayIndex+1}: ${d.title}`; document.getElementById('hero-day-loc').innerHTML=`<i class="fas fa-map-marker-alt"></i> ${d.location}`; updateWeather(d.location); }
-        function renderItinerary() { const list=document.getElementById('itinerary-list'); list.innerHTML=''; let evts = data.days[currentDayIndex].events; if (!data.days[currentDayIndex].hasManualOrder) { evts.sort((a, b) => { const tA = a.time || a.depTime || "99:99"; const tB = b.time || b.depTime || "99:99"; return tA.localeCompare(tB); }); } if(evts.length===0) { list.innerHTML='<div style="text-align:center;color:#999;margin-top:50px;">點擊 + 新增行程</div>'; return; } evts.forEach((evt, idx) => { const cat = CAT_CONFIG[evt.category||'other']; let contentHtml='', mapUrl='', loc=''; let timeD = evt.time||'--:--'; if(evt.category==='flight') { timeD = evt.depTime; contentHtml=`<div class="flight-visual"><div style="text-align:center"><div class="flight-code">${evt.depAirport}</div><div style="font-size:0.8rem">${evt.depTime}</div></div><div style="flex:1;text-align:center;border-bottom:2px dashed #ccc;position:relative;margin:0 10px;"><i class="fas fa-plane" style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);color:#aaa"></i><div style="margin-top:5px;font-size:0.7rem">${evt.flightNo}</div></div><div style="text-align:center"><div class="flight-code">${evt.arrAirport}</div><div style="font-size:0.8rem">${evt.arrTime}</div></div></div>`; mapUrl=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(evt.depAirport)}`; } else if(evt.category==='transport') { timeD = evt.time; contentHtml=`<div class="transport-visual"><span style="font-weight:bold;color:#555">${evt.transFrom}</span> <i class="fas fa-arrow-right" style="color:#999"></i> <span style="font-weight:bold;color:#555">${evt.transTo}</span></div>`; mapUrl=`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(evt.transFrom)}&destination=${encodeURIComponent(evt.transTo)}&travelmode=transit`; } else { mapUrl=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('日本 ' + evt.location)}`; loc=evt.location; } list.innerHTML += `<div class="timeline-card-wrapper" data-idx="${idx}"><div class="timeline-time">${timeD}</div><div class="card timeline-style" style="border-left: 6px solid ${cat.color};"><div class="event-title-large">${evt.title}</div>${contentHtml}${(evt.category!=='transport'&&evt.category!=='flight') ? `<div class="event-loc-row"><i class="fas fa-map-marker-alt"></i> ${loc}</div>` : ''}${evt.note ? `<div class="event-note-box">${evt.note}</div>` : ''}<div class="card-actions-bar"><a href="${mapUrl}" target="_blank" class="action-link"><i class="far fa-map"></i> 地圖</a><div class="action-link admin-only" onclick="openEventModal(${idx})"><i class="far fa-edit"></i> 編輯</div><div class="action-link admin-only" style="color:#ffcccb;" onclick="delEvt(${idx})"><i class="far fa-trash-alt"></i> 刪除</div></div></div></div>`; }); if(sortableInstance) sortableInstance.destroy(); sortableInstance = new Sortable(list, { animation: 150, delay: 300, delayOnTouchOnly: true, ghostClass: 'sortable-ghost', handle: '.card', filter: ".ignore-elements", onStart: function(evt) { if(!isAdminMode) return false; }, onMove: function(evt) { return isAdminMode; }, onEnd: function (evt) { if (!isAdminMode) return; const item = data.days[currentDayIndex].events.splice(evt.oldIndex, 1)[0]; data.days[currentDayIndex].events.splice(evt.newIndex, 0, item); data.days[currentDayIndex].hasManualOrder = true; saveData(); } }); }
-        function toggleEventFields() { const cat = document.getElementById('evt-cat').value; document.getElementById('field-normal').style.display = (cat==='flight'||cat==='transport')?'none':'block'; document.getElementById('field-flight').style.display = (cat==='flight')?'block':'none'; document.getElementById('field-transport').style.display = (cat==='transport')?'block':'none'; }
-        function openEventModal(idx=null) { editingEvent = { dayIdx: currentDayIndex, evtIdx: idx }; document.getElementById('evt-title').value=''; document.getElementById('evt-note').value=''; setTimeVal('evt-time', '09:00'); setTimeVal('evt-trans', '09:00'); setTimeVal('evt-dep', '09:00'); setTimeVal('evt-arr', '13:00'); if(idx===null) { document.getElementById('evt-cat').value='spot'; document.getElementById('evt-loc').value=''; document.getElementById('evt-trans-from').value=''; document.getElementById('evt-trans-to').value=''; } else { const e = data.days[currentDayIndex].events[idx]; document.getElementById('evt-cat').value = e.category||'spot'; document.getElementById('evt-title').value = e.title; document.getElementById('evt-note').value = e.note; if(e.category === 'flight') { document.getElementById('evt-dep-apt').value=e.depAirport; document.getElementById('evt-arr-apt').value=e.arrAirport; setTimeVal('evt-dep', e.depTime); setTimeVal('evt-arr', e.arrTime); document.getElementById('evt-flt-no').value=e.flightNo; document.getElementById('evt-plane').value=e.aircraft; } else if(e.category === 'transport') { setTimeVal('evt-trans', e.time); document.getElementById('evt-trans-from').value = e.transFrom; document.getElementById('evt-trans-to').value = e.transTo; } else { setTimeVal('evt-time', e.time); document.getElementById('evt-loc').value = e.location; } } toggleEventFields(); document.getElementById('modal-event').style.display='flex'; }
-        function saveEvent() { const cat = document.getElementById('evt-cat').value; const title = document.getElementById('evt-title').value; if(!title) return alert('請輸入名稱'); let obj = { category: cat, title: title, note: document.getElementById('evt-note').value }; if(cat==='flight') { obj.depAirport=document.getElementById('evt-dep-apt').value; obj.arrAirport=document.getElementById('evt-arr-apt').value; obj.depTime=getTimeVal('evt-dep'); obj.arrTime=getTimeVal('evt-arr'); obj.flightNo=document.getElementById('evt-flt-no').value; obj.aircraft=document.getElementById('evt-plane').value; } else if(cat==='transport') { obj.time=getTimeVal('evt-trans'); obj.transFrom=document.getElementById('evt-trans-from').value; obj.transTo=document.getElementById('evt-trans-to').value; } else { obj.time=getTimeVal('evt-time'); obj.location=document.getElementById('evt-loc').value; } if(editingEvent.evtIdx===null) data.days[currentDayIndex].events.push(obj); else data.days[currentDayIndex].events[editingEvent.evtIdx] = obj; saveData(); renderItinerary(); closeModal('modal-event'); }
-        function delEvt(idx) { if(confirm('刪除?')){ data.days[currentDayIndex].events.splice(idx,1); saveData(); renderItinerary(); }}
-        function chkTotal(){ let s=0; document.querySelectorAll('.split-amt').forEach(i=>s+=parseFloat(i.value)||0); document.getElementById('split-total-check').innerText=`總和: ${s}`; }
-        function updateCurrencyUI(){ const c=document.getElementById('exp-currency').value; document.querySelectorAll('.currency-label').forEach(e=>e.innerText=c); }
-        function renderTotalOverview(){ let j=0; data.expenses.forEach(e=>{if(e.currency==='JPY' && e.type !== 'transfer')j+=e.amount;}); document.getElementById('total-expense-display').innerHTML=`JPY: ¥${j.toLocaleString()}`; }
+        function renderTotalOverview(){ 
+            let totalTWD = 0; 
+            data.expenses.forEach(e=>{
+                if(e.type !== 'transfer') {
+                    let r = rates[e.currency] || 1; 
+                    totalTWD += e.amount * r;
+                }
+            }); 
+            document.getElementById('total-expense-display').innerHTML=`總支出: NT$ ${Math.round(totalTWD).toLocaleString()}`; 
+        }
         
         function openMembersModal(){const d=document.getElementById('members-list-edit');d.innerHTML='';data.members.forEach(m=>d.innerHTML+=`<div style="display:flex;margin-bottom:5px"><input value="${m}" style="margin:0"><button class="btn-icon" onclick="this.parentElement.remove()">X</button></div>`);document.getElementById('modal-members').style.display='flex';}
         function addNewMemberField(){document.getElementById('members-list-edit').innerHTML+=`<div style="display:flex;margin-bottom:5px"><input placeholder="新成員" style="margin:0"><button class="btn-icon" onclick="this.parentElement.remove()">X</button></div>`;}
