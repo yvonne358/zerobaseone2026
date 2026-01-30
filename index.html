@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>旅遊隨身手冊</title>
+    <title>旅遊小幫手</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="旅遊手冊">
+    <meta name="apple-mobile-web-app-title" content="旅遊助手">
     
     <link rel="apple-touch-icon" sizes="180x180" href="app-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="app-icon.png">
@@ -72,7 +72,7 @@
             color: var(--text-primary);
             background-color: #ddd;
             
-            /* 使用 header-bg.jpg */
+            /* 修改為讀取本地圖片 header-bg.jpg */
             background-image: 
                 linear-gradient(to bottom, rgba(248, 248, 246, 0.2) 0%, rgba(248, 248, 246, 0.6) 70%, rgba(248, 248, 246, 1) 100%),
                 url('header-bg.jpg');
@@ -82,19 +82,16 @@
             padding-top: calc(40px + env(safe-area-inset-top));
         }
         
-        /* 天氣小工具樣式 */
         .weather-widget-float {
             position: absolute; 
             top: calc(55px + env(safe-area-inset-top)); 
             right: 20px;
             background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(8px);
-            padding: 8px 15px; border-radius: 16px; text-align: center;
+            padding: 10px 15px; border-radius: 16px; text-align: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.6);
-            min-width: 60px;
         }
-        .weather-icon-large { font-size: 1.6rem; color: #FFB300; margin-bottom: 2px; }
-        .weather-temp-large { font-family: var(--font-serif); font-size: 1.1rem; font-weight: bold; }
-        .weather-desc { font-size: 0.75rem; color: #666; margin-top: 2px; }
+        .weather-icon-large { font-size: 1.8rem; color: #FFB300; margin-bottom: 2px; }
+        .weather-temp-large { font-family: var(--font-serif); font-size: 1.2rem; font-weight: bold; }
 
         .time-widget-float { 
             position: absolute; 
@@ -102,27 +99,8 @@
             left: 20px; 
             text-align: left;
         }
-        /* 時間顯示設定：24小時制 + 星期 */
-        .time-display { 
-            font-family: var(--font-serif); 
-            font-size: 3.5rem; 
-            font-weight: 700; 
-            line-height: 1; 
-            text-shadow: 0 2px 20px rgba(255,255,255,0.9); 
-            display: flex;
-            align-items: baseline;
-            gap: 10px;
-        }
-        /* 日期顯示設定：YYYY.MM.DD */
-        .date-display { 
-            font-family: var(--font-serif); 
-            font-size: 1.1rem; 
-            color: #444; 
-            font-weight: bold; 
-            margin-left: 4px; 
-            letter-spacing: 1px; 
-            margin-top: 5px;
-        }
+        .time-display { font-family: var(--font-serif); font-size: 3.5rem; font-weight: 700; line-height: 1; text-shadow: 0 2px 20px rgba(255,255,255,0.9); }
+        .date-display { font-family: var(--font-serif); font-size: 1.1rem; color: #444; font-weight: bold; margin-left: 4px; letter-spacing: 1px; }
 
         .day-title-large { font-family: var(--font-serif); font-size: 2rem; margin: 0 0 5px 0; font-weight: 700; line-height: 1.2; text-shadow: 0 0 10px rgba(255,255,255,0.8); }
         .location-tag { color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 15px; display: flex; align-items: center; gap: 5px; }
@@ -141,7 +119,7 @@
         .date-card-num { font-size: 1.4rem; font-weight: bold; line-height: 1; }
         .date-card-add { background: #eee; border: 2px dashed #ccc; color: #999; }
 
-        /* List Tabs */
+        /* List Tabs (Custom for List Page) */
         .list-tab-card { width: auto; padding: 0 20px; font-size: 1rem; font-weight: bold; }
 
         /* Content Area */
@@ -183,6 +161,8 @@
         
         .card-actions-bar { display: flex; gap: 15px; margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; }
         .action-link { color: var(--text-secondary); font-size: 0.9rem; text-decoration: none; display: flex; align-items: center; gap: 5px; cursor: pointer; }
+        .flight-visual { background: #F2F6F9; padding: 15px; border-radius: 12px; margin: 10px 0; display: flex; justify-content: space-between; align-items: center; }
+        .transport-visual { background: #F0F4F4; padding: 12px; border-radius: 12px; margin: 10px 0; display: flex; align-items: center; gap: 10px; }
 
         /* Expense Cards */
         .expense-card {
@@ -248,6 +228,9 @@
         .split-cb { width: 20px; height: 20px; flex-shrink: 0; margin: 0; accent-color: var(--theme-brown); }
         .split-name { flex: 0 0 70px; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .split-amt { flex: 1; padding: 6px; height: 36px; margin: 0; text-align: right; }
+        
+        /* 智慧分帳：自動計算樣式 */
+        .split-amt.auto-calc { color: #aaa; font-style: italic; }
 
         .split-mode-toggle { display: flex; background: #eee; border-radius: 8px; padding: 3px; margin-bottom: 12px; }
         .split-mode-btn { flex: 1; text-align: center; padding: 6px; border-radius: 6px; cursor: pointer; color: #888; font-size: 0.9rem; }
@@ -277,15 +260,6 @@
         /* Shopping List */
         #shopping-container { margin-top: 20px; }
         .shop-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-
-        /* === 新增樣式：多重付款與智慧分帳 === */
-        .payer-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-        .payer-name { flex: 0 0 70px; font-size: 0.9rem; }
-        .payer-amt { flex: 1; padding: 6px; text-align: right; border: 1px solid #ddd; border-radius: 4px; }
-
-        /* 智慧分帳樣式 */
-        .split-amt.auto-calc { color: #999; font-style: italic; } /* 自動計算的變灰色 */
-        .split-amt.manual-calc { color: var(--text-primary); font-weight: bold; } /* 手動輸入的變黑色 */
     </style>
 </head>
 <body>
@@ -332,15 +306,15 @@
                 <div class="date-display real-date-display">--</div>
             </div>
             <div class="weather-widget-float weather-widget">
-                <div class="weather-icon-large weather-icon" id="hero-weather-icon"><i class="fas fa-spinner fa-spin"></i></div>
-                <div class="weather-temp-large serif-font weather-temp" id="hero-weather-temp">--°C</div>
-                <div class="weather-desc" id="hero-weather-desc">載入中...</div>
+                <div class="weather-icon-large weather-icon"><i class="fas fa-spinner fa-spin"></i></div>
+                <div class="weather-temp-large serif-font weather-temp">--°C</div>
+                <div style="font-size:0.8rem;color:#666" class="weather-desc">Loading</div>
             </div>
             <div class="day-title-large">
                 <span id="hero-day-title">Day 1</span>
                 <i class="fas fa-edit edit-day-btn admin-only" onclick="openDayEditModal()"></i>
             </div>
-            <div class="location-tag" id="hero-day-loc"><i class="fas fa-map-marker-alt"></i> Japan</div>
+            <div class="location-tag" id="hero-day-loc"><i class="fas fa-map-marker-alt"></i> Location</div>
         </div>
 
         <div class="date-scroller" id="date-list"></div>
@@ -359,15 +333,15 @@
                 <div class="time-display real-time-clock">--:--</div>
                 <div class="date-display real-date-display">--</div>
             </div>
-            <div class="day-title-large">我的記帳</div>
-            <div class="location-tag"><i class="fas fa-coins"></i> Trip Expenses</div>
+            <div class="day-title-large">旅程記帳</div>
+            <div class="location-tag"><i class="fas fa-coins"></i> Budget & Split</div>
         </div>
 
         <div class="content-area-bg" style="padding:20px;">
             <div class="balance-card">
                 <div class="admin-only" style="position: absolute; top:15px; right:15px; cursor:pointer; color:var(--text-secondary);" onclick="openMembersModal()"><i class="fas fa-cog"></i> 成員</div>
                 <h3>目前累計支出 (全體)</h3>
-                <div id="total-expense-display" style="font-size:1.1rem; line-height:1.5; color:#555; font-weight:bold; font-family:var(--font-serif);"></div>
+                <div id="total-expense-display" style="font-size:0.9rem; line-height:1.5; color:#555;"></div>
                 <button class="btn btn-small btn-outline" style="margin-top:10px;" onclick="renderSettlement()">查看結算</button>
             </div>
             <div id="expense-list"></div>
@@ -411,46 +385,33 @@
     <div id="modal-expense" class="modal">
         <div class="modal-content">
             <h3 id="exp-modal-title" class="serif-font" style="margin-top:0">記一筆</h3>
-            
-            <div style="display:flex; gap:10px;">
-                <div style="flex:1"><label>日期</label><input type="date" id="exp-date"></div>
-                <div style="flex:1">
-                    <label>幣別</label>
-                    <select id="exp-currency" onchange="updateCurrencyUI()">
-                        <option value="TWD">TWD (台幣)</option>
-                        <option value="JPY">JPY (日幣)</option>
-                        <option value="KRW">KRW (韓元)</option>
-                    </select>
-                </div>
-            </div>
-            
+            <div style="display:flex; gap:10px;"><div style="flex:1"><label>日期</label><input type="date" id="exp-date"></div><div style="flex:1"><label>幣別</label><select id="exp-currency" onchange="updateCurrencyUI()"><option value="TWD">TWD</option><option value="JPY">JPY</option><option value="KRW">KRW</option></select></div></div>
             <label>項目</label><input type="text" id="exp-title">
+            <label>總金額</label><input type="number" id="exp-amount" placeholder="0" oninput="handleTotalAmountChange()" style="font-family:var(--font-serif); font-weight:bold; font-size:1.2rem;">
             
-            <label>總金額</label>
-            <input type="number" id="exp-amount" placeholder="0" oninput="distributePayerAmount()" style="font-family:var(--font-serif); font-weight:bold; font-size:1.2rem; background:#FFFBF0; border:1px solid #8C7B70;">
-
-            <div style="margin:10px 0 5px 0; font-weight:bold; font-size:0.9rem; display:flex; justify-content:space-between;">
-                <span>誰先付錢?</span>
-                <span id="payer-total-check" style="font-size:0.8rem; color:#888;"></span>
-            </div>
-            <div id="payer-list-container" style="max-height:150px; overflow-y:auto; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:10px;">
+            <label>誰先付錢?</label>
+            <div id="payer-section-single">
+                <select id="exp-payer-select" onchange="syncPayerListFromSelect()"></select>
+                <div style="text-align:right; margin-top:-10px; margin-bottom:10px;">
+                    <span style="font-size:0.8rem; color:var(--theme-brown); text-decoration:underline; cursor:pointer;" onclick="togglePayerMode(true)">多人付款 / 詳細 »</span>
                 </div>
-
-            <div style="margin:8px 0 5px 0; font-weight:bold; font-size:0.9rem;">分帳 (<span class="currency-label">JPY</span>)</div>
-            <div class="split-mode-toggle">
-                <div class="split-mode-btn active" id="mode-avg" onclick="setSplitMode('avg')">平均</div>
-                <div class="split-mode-btn" id="mode-custom" onclick="setSplitMode('custom')">手動/智慧</div>
             </div>
             
-            <div id="split-list-container" style="max-height:150px; overflow-y:auto; border-top:1px solid #eee; padding-top:5px;">
+            <div id="payer-section-multi" style="display:none; background:#FFFBF0; padding:10px; border-radius:8px; margin-bottom:15px; border:1px dashed #DDD;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                    <span style="font-size:0.9rem; font-weight:bold;">各付多少 (<span class="currency-label">TWD</span>)</span>
+                    <span style="font-size:0.8rem; color:#666; text-decoration:underline; cursor:pointer;" onclick="togglePayerMode(false)">切換回單人</span>
                 </div>
-            
+                <div id="payer-list-container"></div>
+                <div id="payer-total-check" style="text-align:right; font-size:0.8rem; color:#888;"></div>
+            </div>
+
+            <div style="margin:8px 0 5px 0; font-weight:bold; font-size:0.9rem;">分帳 (<span class="currency-label">TWD</span>)</div>
+            <div class="split-mode-toggle"><div class="split-mode-btn active" id="mode-avg" onclick="setSplitMode('avg')">平均</div><div class="split-mode-btn" id="mode-custom" onclick="setSplitMode('custom')">手動</div></div>
+            <div id="split-list-container" style="max-height:150px; overflow-y:auto; border-top:1px solid #eee; padding-top:5px;"></div>
             <div id="split-total-check" style="text-align:right; font-size:0.8rem; color:#888; margin-top:5px;"></div>
-            
             <label style="margin-top:10px; display:block;">備註</label><textarea id="exp-note" rows="1"></textarea>
-            
-            <button class="btn" onclick="saveExpense()">儲存</button>
-            <button class="btn btn-outline" style="margin-top:5px" onclick="closeModal('modal-expense')">取消</button>
+            <button class="btn" onclick="saveExpense()">儲存</button><button class="btn btn-outline" style="margin-top:5px" onclick="closeModal('modal-expense')">取消</button>
         </div>
     </div>
 
@@ -458,25 +419,21 @@
         <div class="modal-content">
             <h3 class="serif-font">結算報告</h3>
             
-            <div class="admin-only" style="background:#f0f0f0; padding:15px; border-radius:8px; margin-bottom:15px;">
-                <div class="switch-container" style="margin:0; padding:0; background:transparent; display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-size:0.9rem;">🔓 開放成員查看總表</span>
-                    <label class="switch">
-                        <input type="checkbox" id="public-view-toggle" onchange="togglePublicView()">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                
-                <hr style="border:0; border-top:1px dashed #ccc; margin:10px 0;">
-                
-                <div style="display:flex; flex-direction:column; gap:5px;">
-                    <span style="font-size:0.9rem; color:#666;">預設記帳幣別：</span>
-                    <select id="default-currency-select" style="width:100%; margin:0; padding:8px; background:#fff;" onchange="saveDefaultCurrency()">
-                        <option value="TWD">台幣 (TWD)</option>
-                        <option value="JPY">日幣 (JPY)</option>
-                        <option value="KRW">韓元 (KRW)</option>
-                    </select>
-                </div>
+            <div class="admin-only switch-container">
+                <span style="font-size:0.9rem;">🔓 開放成員查看總表</span>
+                <label class="switch">
+                    <input type="checkbox" id="public-view-toggle" onchange="togglePublicView()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="admin-only" style="margin-bottom:15px; background:#f9f9f9; padding:10px; border-radius:8px;">
+                <label style="margin:0; font-size:0.9rem;">預設記帳幣別</label>
+                <select id="default-currency-selector" onchange="saveDefaultCurrency()" style="margin-bottom:0;">
+                    <option value="TWD">TWD (新台幣)</option>
+                    <option value="JPY">JPY (日幣)</option>
+                    <option value="KRW">KRW (韓元)</option>
+                </select>
             </div>
             
             <div id="settlement-rate-info" style="font-size:0.8rem;color:#888;text-align:right;margin-bottom:10px;"></div>
@@ -494,20 +451,13 @@
                 💡 紀錄轉帳後，系統會自動更新結算金額。
             </div>
             <label>日期</label><input type="date" id="trans-date">
-            <label>幣別</label>
-            <select id="trans-currency">
-                <option value="TWD">TWD</option>
-                <option value="JPY">JPY</option>
-                <option value="KRW">KRW</option>
-            </select>
-            
+            <label>幣別</label><select id="trans-currency"><option value="TWD">TWD</option><option value="JPY">JPY</option><option value="KRW">KRW</option></select>
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
                 <div style="flex:1"><label>誰</label><select id="trans-from"></select></div>
                 <div style="padding-top:15px;"><i class="fas fa-arrow-right"></i></div>
                 <div style="flex:1"><label>轉給誰</label><select id="trans-to"></select></div>
             </div>
             <label>金額</label><input type="number" id="trans-amount" placeholder="0" style="font-weight:bold; font-size:1.2rem;">
-            
             <button class="btn btn-blue" onclick="saveTransfer()">確認</button>
             <button class="btn btn-outline" style="margin-top:5px" onclick="closeModal('modal-transfer')">取消</button>
         </div>
@@ -544,39 +494,30 @@
     <script>
         // === Global Variables ===
         const ADMIN_PASSWORD = "8888";
-        
-        // ⚠️⚠️⚠️ 這是您提供的網址，請確認您已將其權限設為「任何人」 ⚠️⚠️⚠️
-        const API_URL = "https://script.google.com/macros/s/AKfycbzR9dFuhvffKZCDNTo47XVq8F67QLz4I1A_fWje1FNNiNYZG-bg_spN2-EpXgnpUZBmpQ/exec"; 
-        
         let isAdminMode = false;
-        let editingEvent = {dayIdx:null,evtIdx:null}; 
-        let editingExpenseId=null; 
-        let editingTransferId=null; 
-        let splitMode='avg'; 
-        let sortableInstance=null, expSortable=null, shopSortable=null;
+        let markers=[]; let editingEvent={dayIdx:null,evtIdx:null}; let editingExpenseId=null; let editingTransferId=null; let splitMode='avg'; let sortableInstance=null, expSortable=null, shopSortable=null;
         
-        let rates = { TWD: 1, JPY: 0.22, KRW: 0.024 }; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbzldpUxC7FpVRSlUEL9kw9B2O7X7cdrsrqPWWH30C0GmeNbJ0iqo0dymOtOyW6Q3upB/exec";
+        
+        // 匯率設定 (基準: 1 外幣 = ? TWD)
+        let exchangeRates = {
+            'JPY': 0.22,
+            'KRW': 0.024,
+            'TWD': 1
+        };
         let currentDayIndex = 0; 
 
-        // 座標資料庫 (影響天氣)
-        const LOC_COORDS = { 
-            'Kyoto': { lat: 35.0116, lon: 135.7681 }, 
-            'Osaka': { lat: 34.6937, lon: 135.5023 } 
-        };
-
-        // 預設資料
+        // Public Data (Init Settings)
         let data = JSON.parse(localStorage.getItem('trip_data_public')) || {
             days: [
-                { date: "2026-01-14", title: "Day 1 集合", location: "Kyoto", events: [] },
-                { date: "2026-01-15", title: "Day 2", location: "Kyoto", events: [] },
-                { date: "2026-01-16", title: "Day 3", location: "Osaka", events: [] },
-                { date: "2026-01-17", title: "Day 4", location: "Osaka", events: [] },
-                { date: "2026-01-18", title: "Day 5 返程", location: "Osaka", events: [] }
+                { date: "2026-01-14", title: "抵達與報到", location: "Osaka", events: [] },
+                { date: "2026-01-15", title: "自由探索", location: "Osaka", events: [] }
             ],
-            expenses: [], 
-            members: ["團員A", "團員B", "團員C", "團員D", "團員E", "團員F"],
-            settings: { showTotalsToPublic: false, defaultCurrency: 'JPY' }
+            expenses: [], members: ["我", "朋友A", "朋友B", "朋友C"],
+            settings: { showTotalsToPublic: false, defaultCurrency: 'TWD' }
         };
+        if(!data.settings) data.settings = { showTotalsToPublic: false, defaultCurrency: 'TWD' };
+        if(!data.settings.defaultCurrency) data.settings.defaultCurrency = 'TWD';
 
         // Private Data
         let myPacking = JSON.parse(localStorage.getItem('my_private_data')) || {
@@ -591,228 +532,9 @@
         const CAT_CONFIG = { 'spot': { color: '#E09F9F', name: '景點' }, 'transport': { color: '#94C0C0', name: '交通' }, 'flight': { color: '#A0C4E3', name: '航班' }, 'food': { color: '#E3D081', name: '美食' }, 'shop': { color: '#DDBea9', name: '購物' }, 'other': { color: '#B0B0B0', name: '其他' } };
         const PACK_UI = { 'luggage': { name: '🧳 行李', bg: 'var(--bg-luggage)' }, 'bag': { name: '👜 隨身包包', bg: 'var(--bg-bag)' }, 'elec': { name: '🔌 電器吃飯', bg: 'var(--bg-elec)' }, 'wear': { name: '👗 衣物', bg: 'var(--bg-wear)' }, 'other': { name: '💊 其他', bg: 'var(--bg-other)' } };
         const SHOP_COLORS = ['#E09F9F', '#94C0C0', '#E3D081', '#DDBea9', '#A0C4E3'];
+        const LOC_COORDS = { 'Kyoto': { lat: 35.0116, lon: 135.7681 }, 'Osaka': { lat: 34.6937, lon: 135.5023 } };
 
-        // === Main Functions ===
-
-        window.onload = function() {
-            startRealTimeClock();
-            fetchExchangeRate();
-            fetchWeather(); // 啟動天氣抓取
-            document.addEventListener('click', createClickEffect);
-            renderDates(); 
-            renderItinerary(); 
-            renderExpenseList(); 
-            renderTotalOverview();
-            renderPackingList();
-            renderShoppingList();
-            loadCloudData();
-        };
-
-        // Time & Display Utils
-        function startRealTimeClock() {
-            setInterval(() => {
-                const now = new Date();
-                
-                // 24小時制時間 (HH:MM)
-                const hours = String(now.getHours()).padStart(2, '0');
-                const minutes = String(now.getMinutes()).padStart(2, '0');
-                const timeStr = `${hours}:${minutes}`;
-                
-                // 星期 (例如 Thu)
-                const dayStr = now.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
-                
-                // 日期格式 YYYY.MM.DD
-                const year = now.getFullYear();
-                const month = String(now.getMonth() + 1).padStart(2, '0');
-                const date = String(now.getDate()).padStart(2, '0');
-                const fullDateStr = `${year}.${month}.${date}`;
-                
-                document.querySelectorAll('.real-time-clock').forEach(el => 
-                    el.innerHTML = `${timeStr} <span style="font-size:0.4em; margin-left:5px; vertical-align:middle; opacity:0.8;">${dayStr}</span>`);
-                
-                document.querySelectorAll('.real-date-display').forEach(el => 
-                    el.innerText = fullDateStr);
-            }, 1000);
-        }
-        
-        // === 天氣功能 (使用 Open-Meteo 免費 API) ===
-        async function fetchWeather() {
-            const d = data.days[currentDayIndex];
-            const locName = d.location; // "Kyoto" or "Osaka"
-            
-            // 預設抓大阪，如果該地點有定義就抓該地點
-            const coords = LOC_COORDS[locName] || LOC_COORDS['Osaka'];
-            
-            document.getElementById('hero-weather-desc').innerText = "更新中...";
-            
-            try {
-                // Open-Meteo API 不需要金鑰
-                const url = `https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&current_weather=true&timezone=auto`;
-                const res = await fetch(url);
-                const wData = await res.json();
-                
-                if (wData.current_weather) {
-                    const temp = wData.current_weather.temperature;
-                    const code = wData.current_weather.weathercode;
-                    
-                    document.getElementById('hero-weather-temp').innerText = `${temp}°C`;
-                    
-                    // 天氣代碼轉換圖示
-                    let iconClass = 'fas fa-cloud';
-                    let descText = '多雲';
-                    
-                    if (code === 0) { iconClass = 'fas fa-sun'; descText = '晴朗'; }
-                    else if (code >= 1 && code <= 3) { iconClass = 'fas fa-cloud-sun'; descText = '多雲'; }
-                    else if (code >= 45 && code <= 48) { iconClass = 'fas fa-smog'; descText = '有霧'; }
-                    else if (code >= 51 && code <= 67) { iconClass = 'fas fa-cloud-rain'; descText = '有雨'; }
-                    else if (code >= 71 && code <= 77) { iconClass = 'fas fa-snowflake'; descText = '下雪'; }
-                    else if (code >= 80 && code <= 82) { iconClass = 'fas fa-umbrella'; descText = '陣雨'; }
-                    else if (code >= 95) { iconClass = 'fas fa-bolt'; descText = '雷雨'; }
-                    
-                    document.getElementById('hero-weather-icon').innerHTML = `<i class="${iconClass}"></i>`;
-                    document.getElementById('hero-weather-desc').innerText = descText;
-                }
-            } catch (e) {
-                console.error("Weather fetch failed", e);
-                document.getElementById('hero-weather-desc').innerText = "無法載入";
-            }
-        }
-
-        function createClickEffect(e) {
-            if(Math.random()>0.3) return; // 不要每次點都出現，太花
-            const el = document.createElement('div');
-            el.innerText = ["✈️","☁️","🌸","🍱","🍘"][Math.floor(Math.random()*5)];
-            el.className = 'click-particle';
-            el.style.left = e.clientX + 'px';
-            el.style.top = e.clientY + 'px';
-            document.body.appendChild(el);
-            setTimeout(() => el.remove(), 4000);
-        }
-
-        function updateHero() {
-            const d = data.days[currentDayIndex];
-            if(d) {
-                document.getElementById('hero-day-title').innerText = `Day ${currentDayIndex+1}: ${d.title}`;
-                document.getElementById('hero-day-loc').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${d.location}`;
-                fetchWeather(); // 切換日期時重新抓取該地天氣
-            }
-        }
-
-        function switchPage(pageId, btnEl) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById('page-' + pageId).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            if(btnEl) btnEl.classList.add('active');
-        }
-
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-        // Cloud Functions
-        async function loadCloudData() {
-            if (API_URL.includes("請填入")) {
-                console.warn("尚未設定 API_URL，略過雲端同步");
-                return;
-            }
-            document.getElementById('hero-day-title').innerText = "雲端同步中...";
-            try {
-                const res = await fetch(API_URL);
-                
-                if (!res.ok) throw new Error("Network response was not ok");
-                
-                const cloudData = await res.json();
-                if(cloudData && cloudData.days) {
-                    data = cloudData;
-                    if(!data.settings) data.settings = { showTotalsToPublic: false, defaultCurrency: 'JPY' };
-                    // 修復日期格式
-                    data.days.forEach(d => d.date = d.date.replace(/\./g, '-'));
-                    localStorage.setItem('trip_data_public', JSON.stringify(data));
-                }
-                console.log("資料同步成功！");
-            } catch(e) {
-                console.error("Sync failed", e);
-                // 增加錯誤提示，幫助使用者發現權限問題
-                if(e.toString().includes('JSON')) {
-                    alert("無法讀取雲端資料，可能是權限設定問題。\n請確認 Google Apps Script 部署設定為「任何人 (Anyone)」。");
-                }
-            }
-            updateHero();
-            renderDates();
-            renderItinerary();
-            renderExpenseList();
-            renderTotalOverview();
-        }
-
-        function saveData() {
-            localStorage.setItem('trip_data_public', JSON.stringify(data));
-            if (!API_URL.includes("請填入")) {
-                const statusDiv = document.createElement('div');
-                statusDiv.style.cssText = "position:fixed;top:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:white;padding:5px 15px;border-radius:20px;font-size:0.8rem;z-index:9999;";
-                statusDiv.innerText = "☁️ 儲存中...";
-                document.body.appendChild(statusDiv);
-
-                fetch(API_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    // 修正：移除 Content-Type 標頭，避免跨域問題導致資料無法傳送
-                    // headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                }).then(() => {
-                    statusDiv.innerText = "✅ 雲端已更新";
-                    setTimeout(() => statusDiv.remove(), 2000);
-                }).catch(e => {
-                    statusDiv.innerText = "❌ 上傳失敗";
-                    statusDiv.style.background = "red";
-                    setTimeout(() => statusDiv.remove(), 3000);
-                });
-            }
-        }
-        function savePackData() { localStorage.setItem('my_private_data', JSON.stringify(myPacking)); }
-
-        // === Logic: Dates & Itinerary ===
-        function renderDates() {
-            const container = document.getElementById('date-list');
-            container.innerHTML = '';
-            data.days.forEach((d, i) => {
-                const dateObj = new Date(d.date);
-                const dayNum = dateObj.getDate();
-                const dayName = dateObj.toLocaleDateString('en-US', {weekday:'short'});
-                container.innerHTML += `
-                <div class="date-card ${i === currentDayIndex ? 'active' : ''}" onclick="currentDayIndex=${i}; updateHero(); renderDates(); renderItinerary();">
-                    <div class="date-card-day">${dayName}</div>
-                    <div class="date-card-num">${dayNum}</div>
-                </div>`;
-            });
-            if(isAdminMode) {
-                container.innerHTML += `<div class="date-card date-card-add" onclick="addNewDay()"><i class="fas fa-plus"></i></div>`;
-            }
-        }
-
-        function renderItinerary() {
-            const container = document.getElementById('itinerary-list');
-            container.innerHTML = '';
-            const day = data.days[currentDayIndex];
-            if(!day || !day.events) return;
-            
-            day.events.sort((a,b) => a.time.localeCompare(b.time));
-            
-            day.events.forEach((evt, idx) => {
-                const catColor = CAT_CONFIG[evt.cat] ? CAT_CONFIG[evt.cat].color : '#ccc';
-                let contentHtml = `<div class="event-title-large">${evt.title}</div><div class="event-loc-row"><i class="fas fa-map-marker-alt"></i> ${evt.loc || '未指定地點'}</div>`;
-                if (evt.note) contentHtml += `<div class="event-note-box">${evt.note}</div>`;
-
-                container.innerHTML += `
-                <div class="timeline-card-wrapper" onclick="openEventModal(${idx})">
-                    <div class="timeline-time">${evt.time}</div>
-                    <div class="card timeline-style" style="border-left: 5px solid ${catColor}">
-                        ${contentHtml}
-                        <div class="admin-only card-actions-bar">
-                             <span class="action-link" onclick="event.stopPropagation(); deleteEvent(${idx})"><i class="far fa-trash-alt"></i> 刪除</span>
-                        </div>
-                    </div>
-                </div>`;
-            });
-        }
-
+        // === Admin Toggle Logic ===
         function toggleAdminMode() {
             if (isAdminMode) {
                 isAdminMode = false;
@@ -839,68 +561,6 @@
             }
         }
 
-        // === Event Editing ===
-        function openEventModal(evtIdx = null) {
-            if(!isAdminMode && evtIdx === null) return; // 沒權限不能新增
-            
-            editingEvent = { dayIdx: currentDayIndex, evtIdx: evtIdx };
-            const d = data.days[currentDayIndex];
-            
-            if (evtIdx !== null) {
-                const e = d.events[evtIdx];
-                document.getElementById('evt-cat').value = e.cat;
-                document.getElementById('evt-title').value = e.title;
-                document.getElementById('evt-time').value = e.time;
-                document.getElementById('evt-loc').value = e.loc;
-                document.getElementById('evt-note').value = e.note;
-                // Transport / Flight fields would be populated here in full version
-            } else {
-                document.getElementById('evt-cat').value = 'spot';
-                document.getElementById('evt-title').value = '';
-                document.getElementById('evt-time').value = '09:00';
-                document.getElementById('evt-loc').value = '';
-                document.getElementById('evt-note').value = '';
-            }
-            toggleEventFields();
-            document.getElementById('modal-event').style.display = 'flex';
-        }
-
-        function toggleEventFields() {
-            const cat = document.getElementById('evt-cat').value;
-            document.getElementById('field-normal').style.display = (cat!=='flight'&&cat!=='transport') ? 'block':'none';
-            document.getElementById('field-transport').style.display = (cat==='transport') ? 'block':'none';
-            document.getElementById('field-flight').style.display = (cat==='flight') ? 'block':'none';
-        }
-
-        function saveEvent() {
-            const cat = document.getElementById('evt-cat').value;
-            const title = document.getElementById('evt-title').value;
-            let time = document.getElementById('evt-time').value;
-            let loc = document.getElementById('evt-loc').value;
-            const note = document.getElementById('evt-note').value;
-            
-            if (!title) return alert("請輸入行程名稱");
-            
-            const newEvt = { cat, title, time, loc, note };
-            
-            if (editingEvent.evtIdx !== null) {
-                data.days[currentDayIndex].events[editingEvent.evtIdx] = newEvt;
-            } else {
-                data.days[currentDayIndex].events.push(newEvt);
-            }
-            saveData();
-            renderItinerary();
-            closeModal('modal-event');
-        }
-
-        function deleteEvent(idx) {
-            if(confirm("刪除此行程？")) {
-                data.days[currentDayIndex].events.splice(idx, 1);
-                saveData();
-                renderItinerary();
-            }
-        }
-
         // === List Tab Switching ===
         function switchListTab(tabName, el) {
             document.querySelectorAll('.list-tab-card').forEach(c => c.classList.remove('active'));
@@ -909,6 +569,7 @@
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.getElementById('tab-' + tabName).classList.add('active');
             
+            // Update Title
             const titleEl = document.getElementById('list-page-title');
             if (tabName === 'packing') {
                 titleEl.innerText = '行李準備清單';
@@ -916,6 +577,75 @@
                 titleEl.innerText = '購物清單';
             }
         }
+
+        // === Cloud Sync & Init ===
+        async function loadCloudData() {
+            // document.getElementById('hero-day-title').innerText = "雲端同步中...";
+            try {
+                const res = await fetch(API_URL);
+                const cloudData = await res.json();
+                if(cloudData && cloudData.days) {
+                    data = cloudData;
+                    if(!data.settings) data.settings = { showTotalsToPublic: false, defaultCurrency: 'TWD' };
+                    if(!data.settings.defaultCurrency) data.settings.defaultCurrency = 'TWD';
+                    data.days.forEach(d => d.date = d.date.replace(/\./g, '-'));
+                    localStorage.setItem('trip_data_public', JSON.stringify(data));
+                }
+                console.log("資料同步成功！");
+            } catch(e) {
+                console.error("Sync failed", e);
+            }
+            updateHero();
+            renderDates();
+            renderItinerary();
+            renderExpenseList();
+            renderTotalOverview();
+            renderShoppingList();
+            renderPackingList();
+        }
+
+        function saveData() {
+            localStorage.setItem('trip_data_public', JSON.stringify(data));
+            const statusDiv = document.createElement('div');
+            statusDiv.style.cssText = "position:fixed;top:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:white;padding:5px 15px;border-radius:20px;font-size:0.8rem;z-index:9999;";
+            statusDiv.innerText = "☁️ 儲存中...";
+            document.body.appendChild(statusDiv);
+
+            fetch(API_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).then(() => {
+                statusDiv.innerText = "✅ 雲端已更新";
+                setTimeout(() => statusDiv.remove(), 2000);
+            }).catch(e => {
+                statusDiv.innerText = "❌ 上傳失敗";
+                statusDiv.style.background = "red";
+                setTimeout(() => statusDiv.remove(), 3000);
+            });
+        }
+
+        function savePackData() { localStorage.setItem('my_private_data', JSON.stringify(myPacking)); }
+
+        window.onload = function() {
+            startRealTimeClock();
+            fetchExchangeRate();
+            document.addEventListener('click', createClickEffect);
+            renderDates(); 
+            renderItinerary(); 
+            renderExpenseList(); 
+            renderTotalOverview();
+            renderPackingList();
+            renderShoppingList();
+            loadCloudData();
+        };
+
+        // ... [Day Edit Functions Kept Same] ...
+        function openDayEditModal() { if(!isAdminMode) return; const d = data.days[currentDayIndex]; document.getElementById('day-edit-title').value = d.title; document.getElementById('day-edit-loc').value = d.location; document.getElementById('day-edit-date').value = d.date; document.getElementById('modal-day-edit').style.display = 'flex'; }
+        function saveDayInfo() { const title = document.getElementById('day-edit-title').value; const loc = document.getElementById('day-edit-loc').value; const newDateStr = document.getElementById('day-edit-date').value; if (title) data.days[currentDayIndex].title = title; if (loc) data.days[currentDayIndex].location = loc; if (newDateStr && newDateStr !== data.days[currentDayIndex].date) { if (currentDayIndex === 0) { const oldStart = new Date(data.days[0].date); const newStart = new Date(newDateStr); const diffTime = newStart - oldStart; data.days.forEach(d => { const current = new Date(d.date); const newD = new Date(current.getTime() + diffTime); d.date = newD.toISOString().split('T')[0]; }); } else { data.days[currentDayIndex].date = newDateStr; } } saveData(); updateHero(); renderDates(); closeModal('modal-day-edit'); }
+        function addNewDay() { if(!isAdminMode) return; const lastDay = data.days[data.days.length - 1]; const nextDate = new Date(lastDay.date); nextDate.setDate(nextDate.getDate() + 1); data.days.push({ date: nextDate.toISOString().split('T')[0], title: "自由活動", location: "Osaka", events: [] }); saveData(); renderDates(); currentDayIndex = data.days.length - 1; updateHero(); renderItinerary(); }
+        function deleteDay() { if(confirm("確定刪除這整天的行程嗎？")) { data.days.splice(currentDayIndex, 1); if(data.days.length === 0) { data.days.push({date: "2026-01-01", title: "New Trip", location: "Japan", events: []}); } currentDayIndex = 0; saveData(); closeModal('modal-day-edit'); renderDates(); updateHero(); renderItinerary(); } }
 
         // === Shopping & Packing Functions ===
         function renderShoppingList() {
@@ -970,46 +700,180 @@
         function openPackModal(){ document.getElementById('modal-pack-add').style.display='flex'; }
         function saveNewPackItem(){ const n=document.getElementById('pack-add-name').value; if(n){ myPacking[document.getElementById('pack-add-cat').value].push({t:n,c:false}); savePackData(); renderPackingList(); closeModal('modal-pack-add'); document.getElementById('pack-add-name').value=''; }}
 
-        // === Day Editing ===
-        function openDayEditModal() { if(!isAdminMode) return; const d = data.days[currentDayIndex]; document.getElementById('day-edit-title').value = d.title; document.getElementById('day-edit-loc').value = d.location; document.getElementById('day-edit-date').value = d.date; document.getElementById('modal-day-edit').style.display = 'flex'; }
-        function saveDayInfo() { const title = document.getElementById('day-edit-title').value; const loc = document.getElementById('day-edit-loc').value; const newDateStr = document.getElementById('day-edit-date').value; if (title) data.days[currentDayIndex].title = title; if (loc) data.days[currentDayIndex].location = loc; if (newDateStr && newDateStr !== data.days[currentDayIndex].date) { if (currentDayIndex === 0) { const oldStart = new Date(data.days[0].date); const newStart = new Date(newDateStr); const diffTime = newStart - oldStart; data.days.forEach(d => { const current = new Date(d.date); const newD = new Date(current.getTime() + diffTime); d.date = newD.toISOString().split('T')[0]; }); } else { data.days[currentDayIndex].date = newDateStr; } } saveData(); updateHero(); renderDates(); closeModal('modal-day-edit'); }
-        function addNewDay() { if(!isAdminMode) return; const lastDay = data.days[data.days.length - 1]; const nextDate = new Date(lastDay.date); nextDate.setDate(nextDate.getDate() + 1); data.days.push({ date: nextDate.toISOString().split('T')[0], title: "自由活動", location: "Osaka", events: [] }); saveData(); renderDates(); currentDayIndex = data.days.length - 1; updateHero(); renderItinerary(); }
-        function deleteDay() { if(confirm("確定刪除這整天的行程嗎？")) { data.days.splice(currentDayIndex, 1); if(data.days.length === 0) { data.days.push({date: "2026-01-01", title: "New Trip", location: "Japan", events: []}); } currentDayIndex = 0; saveData(); closeModal('modal-day-edit'); renderDates(); updateHero(); renderItinerary(); } }
+        // === Expense & Transfer Functions ===
+        function renderExpenseList() {
+            const l = document.getElementById('expense-list'); l.innerHTML = '';
+            const sorted = data.expenses.slice().sort((a, b) => {
+                if (a.date !== b.date) return new Date(a.date) - new Date(b.date);
+                return a.id - b.id;
+            });
+            sorted.forEach((e) => {
+                let html = '';
+                if (e.type === 'transfer') {
+                    // Transfer Styling
+                    const toMember = Object.keys(e.splitDetails)[0];
+                    html = `
+                    <div class="expense-card transfer-type" data-id="${e.id}">
+                        <div class="expense-info-left" style="display:flex; align-items:center; gap:10px;">
+                            <div style="font-size:1.2rem; color:#2196F3;"><i class="fas fa-exchange-alt"></i></div>
+                            <div>
+                                <div style="font-size:0.8rem;color:#666">${e.date}</div>
+                                <div style="font-weight:bold; font-size:1rem; color:#0D47A1;">${e.payer} <i class="fas fa-arrow-right" style="font-size:0.8rem"></i> ${toMember}</div>
+                            </div>
+                        </div>
+                        <div style="text-align:right">
+                            <div class="money" style="font-size:1.2rem; color:#2196F3">${e.currency} ${e.amount.toLocaleString()}</div>
+                            <div class="admin-only" style="margin-top:5px; gap:10px; justify-content:flex-end;">
+                                 <i class="far fa-edit" style="color:#aaa; cursor:pointer;" onclick="openTransferModal('${e.id}')"></i>
+                                 <i class="far fa-trash-alt" style="color:#ffcccb; cursor:pointer;" onclick="deleteExpense('${e.id}')"></i>
+                            </div>
+                        </div>
+                    </div>`;
+                } else {
+                    // Normal Expense
+                    // 處理多人付款顯示
+                    let payerText = "";
+                    if (typeof e.payer === 'object') {
+                        const payers = Object.entries(e.payer).filter(([k,v]) => v > 0);
+                        if (payers.length === 1) {
+                            payerText = `${payers[0][0]} 先付`;
+                        } else {
+                            payerText = `多人合付`; // 簡化顯示，詳情點進去或顯示 tooltip
+                        }
+                    } else {
+                        payerText = `${e.payer} 先付`;
+                    }
 
-        // === Expense & Rates ===
-        async function fetchExchangeRate() { 
-            try { 
-                const res = await fetch('https://api.exchangerate-api.com/v4/latest/TWD'); 
-                const d = await res.json(); 
-                if(d.rates) { 
-                    if(d.rates.JPY) rates.JPY = 1 / d.rates.JPY;
-                    if(d.rates.KRW) rates.KRW = 1 / d.rates.KRW;
-                    rates.TWD = 1;
-                } 
-            } catch(e) { 
-                console.log("Rate fetch failed, using defaults"); 
-            } 
-            document.getElementById('settlement-rate-info').innerText = 
-                `匯率: 1 JPY≈${rates.JPY.toFixed(3)} | 1 KRW≈${rates.KRW.toFixed(3)} TWD`;
+                    html = `
+                    <div class="expense-card" data-id="${e.id}">
+                        <div class="expense-info-left">
+                            <div style="font-size:0.8rem;color:#888">${e.date}</div>
+                            <div style="font-weight:bold; font-size:1.1rem; font-family:var(--font-serif);">${e.title}</div>
+                            <div style="font-size:0.8rem; color:#666;">${payerText}</div>
+                        </div>
+                        <div style="text-align:right">
+                            <div class="money" style="font-size:1.2rem; color:var(--theme-brown)">${e.currency} ${e.amount.toLocaleString()}</div>
+                            <div class="admin-only" style="margin-top:5px; gap:10px; justify-content:flex-end;">
+                                 <i class="far fa-edit" style="color:#aaa; cursor:pointer;" onclick="openExpenseModal('${e.id}')"></i>
+                                 <i class="far fa-trash-alt" style="color:#ffcccb; cursor:pointer;" onclick="deleteExpense('${e.id}')"></i>
+                            </div>
+                        </div>
+                    </div>`;
+                }
+                l.innerHTML += html;
+            });
+            if (expSortable) expSortable.destroy();
+            expSortable = new Sortable(l, { animation: 150, delay: 200, delayOnTouchOnly: true, ghostClass: 'sortable-ghost' });
+        }
+        
+        // === Payer Logic Updates ===
+        let isMultiPayerMode = false;
+
+        function togglePayerMode(isMulti) {
+            isMultiPayerMode = isMulti;
+            const singleSec = document.getElementById('payer-section-single');
+            const multiSec = document.getElementById('payer-section-multi');
+            
+            if (isMulti) {
+                singleSec.style.display = 'none';
+                multiSec.style.display = 'block';
+                // Sync values: clear single select or distribute? Just keep existing inputs
+                syncPayerListCheck();
+            } else {
+                singleSec.style.display = 'block';
+                multiSec.style.display = 'none';
+                // Try to set select to the one paying full amount, or first person
+                syncPayerListFromSelect(); 
+            }
         }
 
-        function updateCurrencyUI() {
-            const cur = document.getElementById('exp-currency').value;
-            document.querySelectorAll('.currency-label').forEach(el => el.innerText = cur);
+        function syncPayerListFromSelect() {
+            // 單人模式改變選單時，更新 Multi 列表的數值（即使它是隱藏的）以保持數據一致
+            const selected = document.getElementById('exp-payer-select').value;
+            const total = parseFloat(document.getElementById('exp-amount').value) || 0;
+            
+            document.querySelectorAll('.payer-amt').forEach(inp => {
+                if (inp.dataset.m === selected) inp.value = total;
+                else inp.value = 0;
+            });
+            syncPayerListCheck();
+        }
+
+        function syncPayerListCheck() {
+            let s = 0;
+            document.querySelectorAll('.payer-amt').forEach(i => s += parseFloat(i.value) || 0);
+            const total = parseFloat(document.getElementById('exp-amount').value) || 0;
+            const checkEl = document.getElementById('payer-total-check');
+            
+            if (Math.abs(s - total) > 0.9) { // Allow slight float diff
+                checkEl.innerHTML = `<span style="color:red">目前湊資: ${s} (差額 ${total - s})</span>`;
+            } else {
+                checkEl.innerHTML = `<span style="color:green"><i class="fas fa-check"></i> 金額相符</span>`;
+            }
+        }
+
+        function handleTotalAmountChange() {
+            if (!isMultiPayerMode) {
+                syncPayerListFromSelect();
+            } else {
+                syncPayerListCheck();
+            }
+            // Smart Split Calculation Trigger
+            if (splitMode === 'custom') {
+                // If total changes, we should probably reset split or keep ratios?
+                // For simplicity in this requirement: Recalculate remaining for auto fields
+                calculateSmartSplit(); 
+            }
         }
 
         function openExpenseModal(editId=null) {
-            editingExpenseId = editId;
-            const defaultCurr = (data.settings && data.settings.defaultCurrency) ? data.settings.defaultCurrency : 'JPY';
+            editingExpenseId = editId; 
             
+            // Build Payer Select (Single Mode)
+            const payerSel = document.getElementById('exp-payer-select'); payerSel.innerHTML=''; 
+            data.members.forEach(m=>payerSel.innerHTML+=`<option value="${m}">${m}</option>`);
+
+            // Build Payer List (Multi Mode)
+            const payerCont = document.getElementById('payer-list-container'); payerCont.innerHTML='';
+            data.members.forEach(m => {
+                payerCont.innerHTML += `
+                <div class="split-row-compact">
+                    <span class="split-name" style="flex:0 0 80px">${m}</span>
+                    <input type="number" class="payer-amt" data-m="${m}" value="0" oninput="syncPayerListCheck()" placeholder="0" onfocus="this.select()">
+                </div>`;
+            });
+
             let editData = null;
             if (editId) { 
                 editData = data.expenses.find(e => e.id === editId); 
                 if(editData.type === 'transfer') return; 
                 document.getElementById('exp-modal-title').innerText = "修改帳目"; 
-            } else { 
-                document.getElementById('exp-modal-title').innerText = "記一筆"; 
-            }
+            } 
+            else { document.getElementById('exp-modal-title').innerText = "記一筆"; }
+
+            // Build Split List
+            const splitCont = document.getElementById('split-list-container'); splitCont.innerHTML=''; 
+            data.members.forEach(m=> {
+                let isChecked = true; let splitAmount = 0; let isLocked = false;
+                if (editData && editData.splitDetails) {
+                    if (editData.splitDetails[m] !== undefined && editData.splitDetails[m] >= 0) { 
+                        isChecked = true; 
+                        splitAmount = editData.splitDetails[m];
+                        isLocked = true; // In edit mode, treat all as explicit values initially to prevent jump
+                    } else { isChecked = false; }
+                }
+                
+                // Note: onfocus remove auto-calc class
+                splitCont.innerHTML+=`
+                <div class="split-row-compact">
+                    <input type="checkbox" class="split-cb" value="${m}" ${isChecked ? 'checked' : ''} onchange="calculateSmartSplit()">
+                    <span class="split-name">${m}</span>
+                    <input type="number" class="split-amt" data-m="${m}" value="${splitAmount}" disabled 
+                        oninput="onSplitInput(this)" 
+                        onfocus="this.select(); this.classList.remove('auto-calc');"
+                        data-locked="${isLocked}">
+                </div>`;
+            }); 
 
             if (editData) {
                 document.getElementById('exp-date').value = editData.date;
@@ -1017,190 +881,133 @@
                 document.getElementById('exp-title').value = editData.title;
                 document.getElementById('exp-amount').value = editData.amount;
                 document.getElementById('exp-note').value = editData.note || '';
+                
+                // Handle Payer UI restoration
+                if (typeof editData.payer === 'object') {
+                    // Multi Payer Data
+                    togglePayerMode(true);
+                    Object.keys(editData.payer).forEach(m => {
+                        const inp = document.querySelector(`.payer-amt[data-m="${m}"]`);
+                        if(inp) inp.value = editData.payer[m];
+                    });
+                } else {
+                    // Legacy/Single Payer Data
+                    togglePayerMode(false);
+                    document.getElementById('exp-payer-select').value = editData.payer;
+                    syncPayerListFromSelect();
+                }
+
+                setSplitMode('custom'); // Force custom for edit to preserve values
             } else {
                 document.getElementById('exp-date').value = new Date().toISOString().split('T')[0]; 
-                document.getElementById('exp-currency').value = defaultCurr; 
-                document.getElementById('exp-title').value = ''; 
-                document.getElementById('exp-amount').value = ''; 
-                document.getElementById('exp-note').value = '';
+                document.getElementById('exp-currency').value = data.settings.defaultCurrency || 'TWD'; 
+                document.getElementById('exp-title').value=''; 
+                document.getElementById('exp-amount').value=''; 
+                document.getElementById('exp-note').value='';
+                togglePayerMode(false);
+                document.getElementById('exp-payer-select').value = data.members[0];
+                syncPayerListFromSelect();
+                setSplitMode('avg'); 
             }
-            updateCurrencyUI();
-
-            // A. Payer List
-            const payerCont = document.getElementById('payer-list-container'); 
-            payerCont.innerHTML = '';
-            data.members.forEach(m => {
-                let val = 0;
-                if (editData) {
-                    if (typeof editData.payer === 'string') {
-                        if(editData.payer === m) val = editData.amount;
-                    } else if (editData.payers && editData.payers[m]) {
-                        val = editData.payers[m];
-                    }
-                } else if (m === data.members[0]) { 
-                    val = 0; 
-                }
-                
-                payerCont.innerHTML += `
-                <div class="payer-row">
-                    <span class="payer-name">${m}</span>
-                    <input type="number" class="payer-amt" data-m="${m}" value="${val === 0 ? '' : val}" placeholder="0" oninput="checkPayerTotal()">
-                </div>`;
-            });
-
-            // B. Split List
-            const splitCont = document.getElementById('split-list-container'); 
-            splitCont.innerHTML = '';
-            
-            data.members.forEach(m => {
-                let isChecked = true; 
-                let splitAmount = 0;
-                let isLocked = false; 
-
-                if (editData && editData.splitDetails) {
-                    if (editData.splitDetails[m] !== undefined && editData.splitDetails[m] > 0) { 
-                        isChecked = true; 
-                        splitAmount = editData.splitDetails[m];
-                        isLocked = true; 
-                    } else { 
-                        isChecked = false; 
-                    }
-                }
-                
-                splitCont.innerHTML += `
-                <div class="split-row-compact">
-                    <input type="checkbox" class="split-cb" value="${m}" ${isChecked ? 'checked' : ''} onchange="recalcSmartSplit()">
-                    <span class="split-name">${m}</span>
-                    <input type="number" class="split-amt ${isLocked?'manual-calc':'auto-calc'}" 
-                        data-m="${m}" data-locked="${isLocked}" value="${splitAmount}" 
-                        onfocus="if(this.classList.contains('auto-calc')) this.select();" 
-                        oninput="handleManualSplitInput(this)">
-                </div>`;
-            }); 
-
-            if (editData) setSplitMode('custom'); 
-            else setSplitMode('avg'); 
-            
-            document.getElementById('modal-expense').style.display = 'flex'; 
+            updateCurrencyUI(); 
+            document.getElementById('modal-expense').style.display='flex'; 
         }
 
-        function distributePayerAmount() {
-            const total = parseFloat(document.getElementById('exp-amount').value) || 0;
-            const payers = document.querySelectorAll('.payer-amt');
-            let currentSum = 0;
-            payers.forEach(p => currentSum += (parseFloat(p.value) || 0));
-            
-            if (currentSum === 0 || (payers[0].value > 0 && currentSum == parseFloat(payers[0].value))) {
-                payers.forEach(p => p.value = ''); 
-                payers[0].value = total; 
-            }
-            checkPayerTotal();
-            if (splitMode === 'avg') calculateSplitPreview();
-            else recalcSmartSplit();
+        // === Smart Split Logic ===
+        function onSplitInput(el) {
+            el.dataset.locked = "true"; // Mark as manually edited
+            calculateSmartSplit();
         }
 
-        function checkPayerTotal() {
-            const total = parseFloat(document.getElementById('exp-amount').value) || 0;
-            let pSum = 0;
-            document.querySelectorAll('.payer-amt').forEach(p => pSum += (parseFloat(p.value) || 0));
-            
-            const el = document.getElementById('payer-total-check');
-            const diff = total - pSum;
-            if (Math.abs(diff) < 0.1) {
-                el.innerText = "✅ 金額吻合";
-                el.style.color = "green";
-            } else {
-                el.innerText = `❌ 差額 ${diff.toFixed(1)}`;
-                el.style.color = "red";
-            }
-        }
-        function chkTotal(){
-             const total = parseFloat(document.getElementById('exp-amount').value) || 0;
-             let sSum = 0;
-             document.querySelectorAll('.split-amt').forEach(i => sSum += (parseFloat(i.value)||0));
-             const el = document.getElementById('split-total-check');
-             const r = total - sSum;
-             el.innerText = `差額: ${r.toFixed(0)}`;
-        }
+        function calculateSmartSplit() {
+            // Only runs in Custom Mode. In Avg mode, logic is simple average.
+            if (splitMode !== 'custom') return calculateAvgSplit();
 
-        function handleManualSplitInput(el) {
-            el.dataset.locked = "true";
-            el.classList.remove('auto-calc');
-            el.classList.add('manual-calc');
-            recalcSmartSplit();
-        }
-
-        function recalcSmartSplit() {
-            if (splitMode === 'avg') return calculateSplitPreview();
-            
             const total = parseFloat(document.getElementById('exp-amount').value) || 0;
             const cbs = document.querySelectorAll('.split-cb');
             const inps = document.querySelectorAll('.split-amt');
             
             let manualSum = 0;
-            let autoCandidates = [];
+            let autoMembersIndices = [];
 
+            // 1. Identify Manual (Locked) vs Auto
             inps.forEach((inp, idx) => {
-                const isChecked = cbs[idx].checked;
-                
-                if (!isChecked) {
+                const cb = cbs[idx];
+                if (!cb.checked) {
                     inp.value = 0;
-                    inp.dataset.locked = "false"; 
-                    inp.classList.add('auto-calc');
-                    inp.classList.remove('manual-calc');
-                    inp.disabled = true; 
+                    inp.dataset.locked = "false"; // Reset lock if unchecked
+                    inp.classList.remove('auto-calc');
+                    return;
+                }
+
+                if (inp.dataset.locked === "true") {
+                    manualSum += parseFloat(inp.value) || 0;
+                    inp.classList.remove('auto-calc');
                 } else {
-                    inp.disabled = false;
-                    if (inp.dataset.locked === "true") {
-                        manualSum += (parseFloat(inp.value) || 0);
-                    } else {
-                        autoCandidates.push(inp);
-                    }
+                    autoMembersIndices.push(idx);
+                    inp.classList.add('auto-calc');
                 }
             });
 
-            const remaining = total - manualSum;
-            const count = autoCandidates.length;
+            // 2. Calculate Remainder
+            let remainder = total - manualSum;
+            
+            // 3. Distribute Remainder
+            if (autoMembersIndices.length > 0) {
+                // Integer division
+                const count = autoMembersIndices.length;
+                const baseAmount = Math.floor(remainder / count);
+                let leftOver = remainder - (baseAmount * count); // pennies
 
-            if (count > 0) {
-                let baseAvg = Math.floor(remaining / count);
-                let remainder = remaining % count; 
+                autoMembersIndices.forEach((idx, i) => {
+                    let amt = baseAmount;
+                    if (leftOver > 0) { amt += 1; leftOver -= 1; }
+                    if (leftOver < 0) { amt -= 1; leftOver += 1; } // Handle negative remainder logic if manual > total
 
-                autoCandidates.forEach(inp => {
-                    let val = baseAvg;
-                    if (remainder > 0) { val += 1; remainder--; }
-                    else if (remainder < 0) { val -= 1; remainder++; }
-
-                    inp.value = val;
-                    inp.classList.add('auto-calc');
-                    inp.classList.remove('manual-calc');
+                    inps[idx].value = amt >= 0 ? amt : 0; // Prevent negative display if manual exceeds total
                 });
             }
+
             chkTotal();
         }
 
-        function calculateSplitPreview(){ if(splitMode!=='avg') return; const t=parseFloat(document.getElementById('exp-amount').value)||0; const cbs=document.querySelectorAll('.split-cb'); const inps=document.querySelectorAll('.split-amt'); let cnt=0; cbs.forEach(c=>{if(c.checked)cnt++}); const avg=cnt>0?Math.floor(t/cnt):0; let rem=cnt>0?t-(avg*cnt):0; inps.forEach((inp,i)=>{ if(cbs[i].checked){ let v=avg; if(rem>0){v++;rem--;} inp.value=v; } else inp.value=0; }); chkTotal(); }
-        
-        function setSplitMode(m) {
-            splitMode = m;
-            document.getElementById('mode-avg').classList.toggle('active', m === 'avg');
-            document.getElementById('mode-custom').classList.toggle('active', m === 'custom');
-            
-            const inps = document.querySelectorAll('.split-amt');
+        function calculateAvgSplit() {
+            const total = parseFloat(document.getElementById('exp-amount').value) || 0;
             const cbs = document.querySelectorAll('.split-cb');
+            const inps = document.querySelectorAll('.split-amt');
+            let activeCount = 0;
+            cbs.forEach(c => { if(c.checked) activeCount++; });
             
-            if (m === 'avg') {
-                 inps.forEach(i => i.disabled = true);
-                 calculateSplitPreview();
-            } else {
-                inps.forEach((i, idx) => {
-                    i.disabled = !cbs[idx].checked;
-                    i.dataset.locked = "false"; 
-                    i.classList.add('auto-calc');
-                    i.classList.remove('manual-calc');
-                });
-                recalcSmartSplit();
-            }
+            if (activeCount === 0) return;
+
+            const baseAmount = Math.floor(total / activeCount);
+            let leftOver = total - (baseAmount * activeCount);
+
+            inps.forEach((inp, idx) => {
+                if (cbs[idx].checked) {
+                    let amt = baseAmount;
+                    if (leftOver > 0) { amt += 1; leftOver -= 1; }
+                    inp.value = amt;
+                    inp.classList.add('auto-calc');
+                    inp.dataset.locked = "false";
+                } else {
+                    inp.value = 0;
+                }
+            });
+            chkTotal();
+        }
+
+        function setSplitMode(m){ 
+            splitMode=m; 
+            document.getElementById('mode-avg').classList.toggle('active',m==='avg'); 
+            document.getElementById('mode-custom').classList.toggle('active',m==='custom'); 
+            
+            document.querySelectorAll('.split-amt').forEach((i,idx)=> {
+                i.disabled = !(m==='custom' && document.querySelectorAll('.split-cb')[idx].checked);
+            });
+            
+            if(m==='avg') calculateAvgSplit();
+            else calculateSmartSplit(); // Switch to custom, treat current values as start point
         }
 
         function saveExpense() { 
@@ -1208,147 +1015,49 @@
             const a = parseFloat(document.getElementById('exp-amount').value); 
             if(!t || isNaN(a) || a <= 0) return alert('請輸入有效的項目與金額'); 
             
-            let payersObj = {};
+            // Collect Payers
+            let payerObj = {};
             let payerSum = 0;
-            document.querySelectorAll('.payer-amt').forEach(p => {
-                const val = parseFloat(p.value) || 0;
+            document.querySelectorAll('.payer-amt').forEach(i => {
+                const val = parseFloat(i.value) || 0;
                 if (val > 0) {
-                    payersObj[p.dataset.m] = val;
+                    payerObj[i.dataset.m] = val;
                     payerSum += val;
                 }
             });
             
-            if (Math.abs(payerSum - a) > 1) return alert(`付款金額總和 (${payerSum}) 與總金額 (${a}) 不符`);
+            if (Math.abs(payerSum - a) > 1) {
+                if (!confirm(`付款金額總和 (${payerSum}) 與 總金額 (${a}) 不符。\n確定要儲存嗎？`)) return;
+            }
 
-            let sd = {}; let s = 0; 
-            document.querySelectorAll('.split-amt').forEach(i => { 
-                const v = parseFloat(i.value) || 0; 
-                if(v > 0) { sd[i.dataset.m] = v; s += v; } 
+            // Collect Splits
+            let sd={}; let s=0; 
+            document.querySelectorAll('.split-amt').forEach(i=>{
+                const v=parseFloat(i.value)||0; 
+                // 只紀錄有勾選的，或者金額>0的 (視邏輯而定，這裡用勾選的為主，但金額0也可以)
+                if(i.parentElement.querySelector('.split-cb').checked){ 
+                    sd[i.dataset.m]=v; s+=v; 
+                }
             }); 
             
-            if(Math.abs(s - a) > 5) return alert('分帳金額總和不符，請檢查分配。'); 
+            if(Math.abs(s-a) > 2) return alert('分帳金額總和不符，請檢查分配。'); 
             
-            const mainPayer = Object.keys(payersObj).length === 1 ? Object.keys(payersObj)[0] : "多位付款";
-
-            const expenseObj = { 
+            const expenseObj = {
                 id: editingExpenseId || Date.now().toString(), 
                 date: document.getElementById('exp-date').value, 
                 currency: document.getElementById('exp-currency').value, 
-                title: t, 
-                amount: a, 
-                payer: mainPayer, 
-                payers: payersObj, 
-                splitDetails: sd, 
-                note: document.getElementById('exp-note').value, 
-                type: 'normal' 
+                title: t, amount: a, 
+                payer: payerObj, // Now an object
+                splitDetails: sd,
+                note: document.getElementById('exp-note').value,
+                type: 'normal'
             };
 
-            if (editingExpenseId) { 
-                const idx = data.expenses.findIndex(e => e.id === editingExpenseId); 
-                if (idx !== -1) data.expenses[idx] = expenseObj; 
-            } else { 
-                data.expenses.push(expenseObj); 
-            } 
-            saveData(); 
-            renderExpenseList(); 
-            renderTotalOverview(); 
-            closeModal('modal-expense'); 
+            if (editingExpenseId) { const idx = data.expenses.findIndex(e => e.id === editingExpenseId); if (idx !== -1) data.expenses[idx] = expenseObj; } else { data.expenses.push(expenseObj); }
+            saveData(); renderExpenseList(); renderTotalOverview(); closeModal('modal-expense'); 
         }
 
-        function saveDefaultCurrency() {
-            if (!data.settings) data.settings = {};
-            data.settings.defaultCurrency = document.getElementById('default-currency-select').value;
-            saveData();
-        }
-
-        function togglePublicView() {
-            data.settings.showTotalsToPublic = document.getElementById('public-view-toggle').checked;
-            saveData();
-            renderSettlement();
-        }
-
-        function renderSettlement() { 
-            let spending = {}; data.members.forEach(m => spending[m] = 0);
-            let Balances = { TWD: {}, JPY: {}, KRW: {} };
-            const currencies = ['TWD', 'JPY', 'KRW'];
-            
-            currencies.forEach(c => {
-                Balances[c] = {};
-                data.members.forEach(m => Balances[c][m] = 0);
-            });
-            
-            data.expenses.forEach(e => { 
-                const cur = e.currency || 'JPY';
-                if (!Balances[cur]) return;
-
-                if (e.payers) {
-                    for (let pName in e.payers) {
-                        Balances[cur][pName] += e.payers[pName];
-                    }
-                } else if (e.payer && typeof e.payer === 'string') {
-                    Balances[cur][e.payer] += e.amount;
-                }
-                
-                Object.keys(e.splitDetails).forEach(k => {
-                    Balances[cur][k] -= e.splitDetails[k];
-                    
-                    if (e.type !== 'transfer') {
-                        let amountTWD = e.splitDetails[k];
-                        if (cur !== 'TWD') {
-                            amountTWD = amountTWD * rates[cur]; 
-                        }
-                        spending[k] += amountTWD;
-                    }
-                }); 
-            }); 
-            
-            const showDetails = isAdminMode || (data.settings && data.settings.showTotalsToPublic);
-            if (data.settings && data.settings.defaultCurrency) {
-                 document.getElementById('default-currency-select').value = data.settings.defaultCurrency;
-            }
-
-            let summaryHtml = `<div class="settlement-summary ${showDetails ? 'visible' : ''}"><h4>💰 個人總消費 (約合台幣)</h4>`;
-            for (const [m, amt] of Object.entries(spending)) { 
-                summaryHtml += `<div class="summary-row"><span>${m}</span><span>NT$ ${Math.round(amt).toLocaleString()}</span></div>`; 
-            }
-            summaryHtml += '</div>';
-            
-            function calculateDebts(balanceMap, unitName) { 
-                let d = [], c = []; 
-                for (let m in balanceMap) {
-                    if (balanceMap[m] < -1) d.push({ p: m, v: balanceMap[m] }); 
-                    else if (balanceMap[m] > 1) c.push({ p: m, v: balanceMap[m] });
-                } 
-                let h = `<h4>${unitName} 建議轉帳</h4>`; 
-                if (d.length === 0 && c.length === 0) return ''; 
-                if (d.length === 0) return h + '<div style="color:#ccc; margin-bottom:15px;">已結清</div>'; 
-                
-                while (d.length > 0 && c.length > 0) { 
-                    d.sort((a, b) => a.v - b.v); c.sort((a, b) => b.v - a.v); 
-                    let amount = Math.min(Math.abs(d[0].v), c[0].v); 
-                    
-                    h += `<div class="transfer-row">
-                            <span>${d[0].p}</span><i class="fas fa-arrow-right"></i><span>${c[0].p}</span>
-                            <span class="money">${Math.round(amount).toLocaleString()}</span>
-                          </div>`; 
-                    
-                    d[0].v += amount; c[0].v -= amount; 
-                    if (Math.abs(d[0].v) < 1) d.shift(); 
-                    if (c[0].v < 1) c.shift(); 
-                } 
-                return h; 
-            } 
-            
-            document.getElementById('settlement-content').innerHTML = 
-                summaryHtml + 
-                calculateDebts(Balances.KRW, '🇰🇷 韓元') + 
-                calculateDebts(Balances.JPY, '🇯🇵 日幣') + 
-                calculateDebts(Balances.TWD, '🇹🇼 台幣'); 
-            
-            document.getElementById('modal-settlement').style.display = 'flex'; 
-        }
-
-        // === Transfers & List ===
+        // === Transfer Logic ===
         function openTransferModal(editId=null) {
             if(!isAdminMode) return;
             editingTransferId = editId;
@@ -1366,7 +1075,7 @@
                 document.getElementById('trans-modal-title').innerText = "修改轉帳";
                 document.getElementById('trans-date').value = trans.date;
                 document.getElementById('trans-currency').value = trans.currency;
-                document.getElementById('trans-from').value = trans.payer;
+                document.getElementById('trans-from').value = trans.payer; // Transfer payer is string
                 document.getElementById('trans-to').value = Object.keys(trans.splitDetails)[0];
                 document.getElementById('trans-amount').value = trans.amount;
             } else {
@@ -1395,7 +1104,7 @@
                 currency: cur,
                 title: "轉帳 (還款)",
                 amount: amt,
-                payer: from,
+                payer: from, // Transfer uses string for single payer
                 splitDetails: { [to]: amt }, 
                 note: "Transfer Record",
                 type: 'transfer'
@@ -1424,71 +1133,138 @@
             } 
         }
 
-        function renderExpenseList() {
-            const l = document.getElementById('expense-list'); l.innerHTML = '';
-            const sorted = data.expenses.slice().sort((a, b) => {
-                if (a.date !== b.date) return new Date(a.date) - new Date(b.date);
-                return a.id - b.id;
-            });
-            sorted.forEach((e) => {
-                let payerText = e.payer;
-                if (e.payers && Object.keys(e.payers).length > 1) {
-                    payerText = "多人先付";
-                }
+        function togglePublicView() {
+            data.settings.showTotalsToPublic = document.getElementById('public-view-toggle').checked;
+            saveData();
+            renderSettlement();
+        }
+        
+        function saveDefaultCurrency() {
+            data.settings.defaultCurrency = document.getElementById('default-currency-selector').value;
+            saveData();
+        }
 
-                let html = '';
-                if (e.type === 'transfer') {
-                    const toMember = Object.keys(e.splitDetails)[0];
-                    html = `
-                    <div class="expense-card transfer-type" data-id="${e.id}">
-                        <div class="expense-info-left" style="display:flex; align-items:center; gap:10px;">
-                            <div style="font-size:1.2rem; color:#2196F3;"><i class="fas fa-exchange-alt"></i></div>
-                            <div>
-                                <div style="font-size:0.8rem;color:#666">${e.date}</div>
-                                <div style="font-weight:bold; font-size:1rem; color:#0D47A1;">${e.payer} <i class="fas fa-arrow-right" style="font-size:0.8rem"></i> ${toMember}</div>
-                            </div>
-                        </div>
-                        <div style="text-align:right">
-                            <div class="money" style="font-size:1.2rem; color:#2196F3">${e.currency} ${e.amount.toLocaleString()}</div>
-                            <div class="admin-only" style="margin-top:5px; gap:10px; justify-content:flex-end;">
-                                 <i class="far fa-edit" style="color:#aaa; cursor:pointer;" onclick="openTransferModal('${e.id}')"></i>
-                                 <i class="far fa-trash-alt" style="color:#ffcccb; cursor:pointer;" onclick="deleteExpense('${e.id}')"></i>
-                            </div>
-                        </div>
-                    </div>`;
+        function renderSettlement() { 
+            let spending = {}; data.members.forEach(m => spending[m] = 0);
+            
+            // Balances for each currency
+            let Balances = {
+                'JPY': {}, 'TWD': {}, 'KRW': {}
+            };
+            data.members.forEach(m => {
+                Balances['JPY'][m] = 0;
+                Balances['TWD'][m] = 0;
+                Balances['KRW'][m] = 0;
+            });
+            
+            data.expenses.forEach(e => { 
+                const cur = e.currency || 'JPY';
+                
+                // Credit Payer(s)
+                if (typeof e.payer === 'object') {
+                    Object.entries(e.payer).forEach(([member, amt]) => {
+                        if (Balances[cur][member] !== undefined) Balances[cur][member] += amt;
+                    });
                 } else {
-                    html = `
-                    <div class="expense-card" data-id="${e.id}">
-                        <div class="expense-info-left">
-                            <div style="font-size:0.8rem;color:#888">${e.date}</div>
-                            <div style="font-weight:bold; font-size:1.1rem; font-family:var(--font-serif);">${e.title}</div>
-                            <div style="font-size:0.8rem; color:#666;">${payerText}</div>
-                        </div>
-                        <div style="text-align:right">
-                            <div class="money" style="font-size:1.2rem; color:var(--theme-brown)">${e.currency} ${e.amount.toLocaleString()}</div>
-                            <div class="admin-only" style="margin-top:5px; gap:10px; justify-content:flex-end;">
-                                 <i class="far fa-edit" style="color:#aaa; cursor:pointer;" onclick="openExpenseModal('${e.id}')"></i>
-                                 <i class="far fa-trash-alt" style="color:#ffcccb; cursor:pointer;" onclick="deleteExpense('${e.id}')"></i>
-                            </div>
-                        </div>
-                    </div>`;
+                    if (Balances[cur][e.payer] !== undefined) Balances[cur][e.payer] += e.amount;
                 }
-                l.innerHTML += html;
-            });
-            if (expSortable) expSortable.destroy();
-            expSortable = new Sortable(l, { animation: 150, delay: 200, delayOnTouchOnly: true, ghostClass: 'sortable-ghost' });
+                
+                // Debit Splitters
+                Object.keys(e.splitDetails).forEach(k => {
+                    if (Balances[cur][k] !== undefined) Balances[cur][k] -= e.splitDetails[k];
+                    
+                    // Spending stats (Exclude transfers)
+                    if (e.type !== 'transfer') {
+                        let amount = e.splitDetails[k];
+                        // Convert everything to TWD for summary
+                        let rate = exchangeRates[cur] || 1;
+                        spending[k] += amount * rate;
+                    }
+                }); 
+            }); 
+            
+            const showDetails = isAdminMode || data.settings.showTotalsToPublic;
+            document.getElementById('public-view-toggle').checked = data.settings.showTotalsToPublic;
+            document.getElementById('default-currency-selector').value = data.settings.defaultCurrency || 'TWD';
+
+            let summaryHtml = `<div class="settlement-summary ${showDetails ? 'visible' : ''}"><h4>💰 個人總消費 (約合台幣)</h4>`;
+            for (const [m, amt] of Object.entries(spending)) { summaryHtml += `<div class="summary-row"><span>${m}</span><span>NT$ ${Math.round(amt).toLocaleString()}</span></div>`; }
+            summaryHtml += '</div>';
+            
+            function sv(b, u, label) { 
+                let d=[],c=[]; for(let m in b){if(b[m]<-1)d.push({p:m,v:b[m]});else if(b[m]>1)c.push({p:m,v:b[m]});} 
+                if(d.length===0) return `<div style="margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:5px;"><h4>${label}</h4><div style="color:#ccc;">已結清</div></div>`; 
+                let h=`<h4>${label} 建議轉帳</h4>`; 
+                while(d.length>0&&c.length>0){ 
+                    d.sort((a,b)=>a.v-b.v);c.sort((a,b)=>b.v-a.v); 
+                    let a=Math.min(Math.abs(d[0].v),c[0].v); 
+                    h+=`<div class="transfer-row"><span>${d[0].p}</span><i class="fas fa-arrow-right"></i><span>${c[0].p}</span><span class="money">${u} ${Math.round(a).toLocaleString()}</span></div>`; 
+                    d[0].v+=a;c[0].v-=a; if(Math.abs(d[0].v)<1)d.shift();if(c[0].v<1)c.shift(); 
+                } 
+                return h; 
+            } 
+            
+            document.getElementById('settlement-rate-info').innerHTML = `
+                匯率參考:<br>
+                1 JPY ≈ ${exchangeRates['JPY']} TWD<br>
+                1 KRW ≈ ${exchangeRates['KRW']} TWD`;
+            
+            document.getElementById('settlement-content').innerHTML = 
+                summaryHtml + 
+                sv(Balances['TWD'],'NT$','🇹🇼 台幣') + 
+                sv(Balances['JPY'],'¥','🇯🇵 日幣') +
+                sv(Balances['KRW'],'₩','🇰🇷 韓元'); 
+            
+            document.getElementById('modal-settlement').style.display='flex'; 
         }
 
+        // ... [Standard Functions] ...
+        function chkTotal(){ let s=0; document.querySelectorAll('.split-amt').forEach(i=>s+=parseFloat(i.value)||0); document.getElementById('split-total-check').innerText=`總和: ${s}`; }
+        function updateCurrencyUI(){ const c=document.getElementById('exp-currency').value; document.querySelectorAll('.currency-label').forEach(e=>e.innerText=c); }
+        
         function renderTotalOverview(){ 
-            let totalTWD = 0; 
-            data.expenses.forEach(e=>{
+            let totalTWD = 0;
+            data.expenses.forEach(e => {
                 if(e.type !== 'transfer') {
-                    let r = rates[e.currency] || 1; 
-                    totalTWD += e.amount * r;
+                    let rate = exchangeRates[e.currency] || 1;
+                    totalTWD += e.amount * rate;
                 }
-            }); 
-            document.getElementById('total-expense-display').innerHTML=`總支出: NT$ ${Math.round(totalTWD).toLocaleString()}`; 
+            });
+            document.getElementById('total-expense-display').innerHTML = `總消費: NT$ ${Math.round(totalTWD).toLocaleString()}`; 
         }
+        
+        function createClickEffect(e) { if(e.target.closest('.admin-lock-btn') || e.target.closest('.edit-day-btn')) return; const shapes = ['♤', '♡', '♢', '♧']; const shape = shapes[Math.floor(Math.random() * shapes.length)]; const el = document.createElement('div'); el.classList.add('click-particle'); el.innerText = shape; const isLucky = Math.random() > 0.85; const color = isLucky ? '#E09F9F' : '#8C7B70'; el.style.color = color; el.style.left = (e.clientX - 7) + 'px'; el.style.top = (e.clientY - 15) + 'px'; const rot = Math.random() * 40 - 20; el.style.transform = `rotate(${rot}deg)`; document.body.appendChild(el); setTimeout(() => { el.remove(); }, 5000); }
+        
+        async function fetchExchangeRate() { 
+            try { 
+                const res = await fetch('https://api.exchangerate-api.com/v4/latest/TWD'); 
+                const d = await res.json(); 
+                if(d.rates) { 
+                    if(d.rates.JPY) exchangeRates['JPY'] = 1 / d.rates.JPY; // TWD base, need to inverse or logic
+                    // The API returns 1 TWD = X JPY. So 1 JPY = 1/X TWD.
+                    if(d.rates.KRW) exchangeRates['KRW'] = 1 / d.rates.KRW;
+                } 
+            } catch(e) { console.log("Rate fetch failed, using default"); } 
+        }
+        
+        function switchPage(pid, el) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById('page-'+pid).classList.add('active'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); el.classList.add('active'); if(pid !== 'list') updateHero(); }
+        function closeModal(id) { document.getElementById(id).style.display='none'; }
+        function startRealTimeClock() { function update() { const now = new Date(); const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']; const h = String(now.getHours()).padStart(2,'0'); const m = String(now.getMinutes()).padStart(2,'0'); const year = now.getFullYear(); const month = String(now.getMonth() + 1).padStart(2, '0'); const day = String(now.getDate()).padStart(2, '0'); document.querySelectorAll('.real-time-clock').forEach(el => { el.innerHTML = `${h}:${m} <span style="font-size:1rem; font-weight:400;">${days[now.getDay()]}</span>`; }); document.querySelectorAll('.real-date-display').forEach(el => { el.innerText = `${year}.${month}.${day}`; }); } update(); setInterval(update, 1000); }
+        
+        async function updateWeather(loc) { const activePage = document.querySelector('.page.active').id; if(activePage === 'page-list') return; if(!loc) { if(data.days[currentDayIndex]) loc = data.days[currentDayIndex].location; else loc = 'Osaka'; } const coords = LOC_COORDS[loc] || LOC_COORDS['Osaka']; const wIcons = document.querySelectorAll('.weather-icon'); const wTemps = document.querySelectorAll('.weather-temp'); const wDescs = document.querySelectorAll('.weather-desc'); wTemps.forEach(e => e.innerText = "--°C"); wDescs.forEach(e => e.innerText = "Loading..."); try { const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&current_weather=true`); const d = await res.json(); const temp = Math.round(d.current_weather.temperature); const code = d.current_weather.weathercode; let iconClass = "fa-sun"; let descText = "晴朗"; if(code>0 && code<=3) { iconClass = "fa-cloud"; descText = "多雲"; } else if(code>=51) { iconClass = "fa-umbrella"; descText = "雨/雪"; } wTemps.forEach(e => e.innerText = `${temp}°C`); wIcons.forEach(e => e.innerHTML = `<i class="fas ${iconClass}"></i>`); wDescs.forEach(e => e.innerText = descText); } catch(e) { wDescs.forEach(e => e.innerText = "Offline"); } }
+        
+        function getTimeVal(p) { return document.getElementById(p).value; }
+        function setTimeVal(p, v) { if(!v) v="09:00"; document.getElementById(p).value = v; }
+        
+        function renderDates() { const c = document.getElementById('date-list'); c.innerHTML=''; data.days.forEach((d,i)=>{ const el=document.createElement('div'); el.className=`date-card ${i===currentDayIndex?'active':''}`; const dateParts = d.date.split('-'); const dayNum = dateParts[2]; el.innerHTML=`<div class="date-card-day">DAY ${i+1}</div><div class="date-card-num">${dayNum}</div>`; el.onclick=()=>{ currentDayIndex=i; updateHero(); renderDates(); renderItinerary(); }; c.appendChild(el); }); if(isAdminMode) { const addBtn = document.createElement('div'); addBtn.className = "date-card date-card-add"; addBtn.innerHTML = `<i class="fas fa-plus"></i>`; addBtn.onclick = addNewDay; c.appendChild(addBtn); } updateHero(); }
+        function updateHero() { const d = data.days[currentDayIndex]; if (!d) return; document.getElementById('hero-day-title').innerText=`Day ${currentDayIndex+1}: ${d.title}`; document.getElementById('hero-day-loc').innerHTML=`<i class="fas fa-map-marker-alt"></i> ${d.location}`; updateWeather(d.location); }
+        
+        function renderItinerary() { const list=document.getElementById('itinerary-list'); list.innerHTML=''; let evts = data.days[currentDayIndex].events; if (!data.days[currentDayIndex].hasManualOrder) { evts.sort((a, b) => { const tA = a.time || a.depTime || "99:99"; const tB = b.time || b.depTime || "99:99"; return tA.localeCompare(tB); }); } if(evts.length===0) { list.innerHTML='<div style="text-align:center;color:#999;margin-top:50px;">點擊 + 新增行程</div>'; return; } evts.forEach((evt, idx) => { const cat = CAT_CONFIG[evt.category||'other']; let contentHtml='', mapUrl='', loc=''; let timeD = evt.time||'--:--'; if(evt.category==='flight') { timeD = evt.depTime; contentHtml=`<div class="flight-visual"><div style="text-align:center"><div class="flight-code">${evt.depAirport}</div><div style="font-size:0.8rem">${evt.depTime}</div></div><div style="flex:1;text-align:center;border-bottom:2px dashed #ccc;position:relative;margin:0 10px;"><i class="fas fa-plane" style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);color:#aaa"></i><div style="margin-top:5px;font-size:0.7rem">${evt.flightNo}</div></div><div style="text-align:center"><div class="flight-code">${evt.arrAirport}</div><div style="font-size:0.8rem">${evt.arrTime}</div></div></div>`; mapUrl=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(evt.depAirport)}`; } else if(evt.category==='transport') { timeD = evt.time; contentHtml=`<div class="transport-visual"><span style="font-weight:bold;color:#555">${evt.transFrom}</span> <i class="fas fa-arrow-right" style="color:#999"></i> <span style="font-weight:bold;color:#555">${evt.transTo}</span></div>`; mapUrl=`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(evt.transFrom)}&destination=${encodeURIComponent(evt.transTo)}&travelmode=transit`; } else { mapUrl=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('日本 ' + evt.location)}`; loc=evt.location; } list.innerHTML += `<div class="timeline-card-wrapper" data-idx="${idx}"><div class="timeline-time">${timeD}</div><div class="card timeline-style" style="border-left: 6px solid ${cat.color};"><div class="event-title-large">${evt.title}</div>${contentHtml}${(evt.category!=='transport'&&evt.category!=='flight') ? `<div class="event-loc-row"><i class="fas fa-map-marker-alt"></i> ${loc}</div>` : ''}${evt.note ? `<div class="event-note-box">${evt.note}</div>` : ''}<div class="card-actions-bar"><a href="${mapUrl}" target="_blank" class="action-link"><i class="far fa-map"></i> 地圖</a><div class="action-link admin-only" onclick="openEventModal(${idx})"><i class="far fa-edit"></i> 編輯</div><div class="action-link admin-only" style="color:#ffcccb;" onclick="delEvt(${idx})"><i class="far fa-trash-alt"></i> 刪除</div></div></div></div>`; }); if(sortableInstance) sortableInstance.destroy(); sortableInstance = new Sortable(list, { animation: 150, delay: 300, delayOnTouchOnly: true, ghostClass: 'sortable-ghost', handle: '.card', filter: ".ignore-elements", onStart: function(evt) { if(!isAdminMode) return false; }, onMove: function(evt) { return isAdminMode; }, onEnd: function (evt) { if (!isAdminMode) return; const item = data.days[currentDayIndex].events.splice(evt.oldIndex, 1)[0]; data.days[currentDayIndex].events.splice(evt.newIndex, 0, item); data.days[currentDayIndex].hasManualOrder = true; saveData(); } }); }
+        
+        function toggleEventFields() { const cat = document.getElementById('evt-cat').value; document.getElementById('field-normal').style.display = (cat==='flight'||cat==='transport')?'none':'block'; document.getElementById('field-flight').style.display = (cat==='flight')?'block':'none'; document.getElementById('field-transport').style.display = (cat==='transport')?'block':'none'; }
+        function openEventModal(idx=null) { editingEvent = { dayIdx: currentDayIndex, evtIdx: idx }; document.getElementById('evt-title').value=''; document.getElementById('evt-note').value=''; setTimeVal('evt-time', '09:00'); setTimeVal('evt-trans', '09:00'); setTimeVal('evt-dep', '09:00'); setTimeVal('evt-arr', '13:00'); if(idx===null) { document.getElementById('evt-cat').value='spot'; document.getElementById('evt-loc').value=''; document.getElementById('evt-trans-from').value=''; document.getElementById('evt-trans-to').value=''; } else { const e = data.days[currentDayIndex].events[idx]; document.getElementById('evt-cat').value = e.category||'spot'; document.getElementById('evt-title').value = e.title; document.getElementById('evt-note').value = e.note; if(e.category === 'flight') { document.getElementById('evt-dep-apt').value=e.depAirport; document.getElementById('evt-arr-apt').value=e.arrAirport; setTimeVal('evt-dep', e.depTime); setTimeVal('evt-arr', e.arrTime); document.getElementById('evt-flt-no').value=e.flightNo; document.getElementById('evt-plane').value=e.aircraft; } else if(e.category === 'transport') { setTimeVal('evt-trans', e.time); document.getElementById('evt-trans-from').value = e.transFrom; document.getElementById('evt-trans-to').value = e.transTo; } else { setTimeVal('evt-time', e.time); document.getElementById('evt-loc').value = e.location; } } toggleEventFields(); document.getElementById('modal-event').style.display='flex'; }
+        function saveEvent() { const cat = document.getElementById('evt-cat').value; const title = document.getElementById('evt-title').value; if(!title) return alert('請輸入名稱'); let obj = { category: cat, title: title, note: document.getElementById('evt-note').value }; if(cat==='flight') { obj.depAirport=document.getElementById('evt-dep-apt').value; obj.arrAirport=document.getElementById('evt-arr-apt').value; obj.depTime=getTimeVal('evt-dep'); obj.arrTime=getTimeVal('evt-arr'); obj.flightNo=document.getElementById('evt-flt-no').value; obj.aircraft=document.getElementById('evt-plane').value; } else if(cat==='transport') { obj.time=getTimeVal('evt-trans'); obj.transFrom=document.getElementById('evt-trans-from').value; obj.transTo=document.getElementById('evt-trans-to').value; } else { obj.time=getTimeVal('evt-time'); obj.location=document.getElementById('evt-loc').value; } if(editingEvent.evtIdx===null) data.days[currentDayIndex].events.push(obj); else data.days[currentDayIndex].events[editingEvent.evtIdx] = obj; saveData(); renderItinerary(); closeModal('modal-event'); }
+        function delEvt(idx) { if(confirm('刪除?')){ data.days[currentDayIndex].events.splice(idx,1); saveData(); renderItinerary(); }}
         
         function openMembersModal(){const d=document.getElementById('members-list-edit');d.innerHTML='';data.members.forEach(m=>d.innerHTML+=`<div style="display:flex;margin-bottom:5px"><input value="${m}" style="margin:0"><button class="btn-icon" onclick="this.parentElement.remove()">X</button></div>`);document.getElementById('modal-members').style.display='flex';}
         function addNewMemberField(){document.getElementById('members-list-edit').innerHTML+=`<div style="display:flex;margin-bottom:5px"><input placeholder="新成員" style="margin:0"><button class="btn-icon" onclick="this.parentElement.remove()">X</button></div>`;}
